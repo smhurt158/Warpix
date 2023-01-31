@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "description": "backend of pixel based team game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc index.ts && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksu-cs-projects-2022-2023/spring2023-smhurt158.git"
+  },
+  "author": "Sean Hurt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksu-cs-projects-2022-2023/spring2023-smhurt158/issues"
+  },
+  "homepage": "https://github.com/ksu-cs-projects-2022-2023/spring2023-smhurt158#readme",
+  "dependencies": {
+    "typescript": "^4.9.5"
+  }
+}
