@@ -26,18 +26,6 @@ export class Board{
     }
 
     makeMove(row:number, col:number, team: string, source: Tile){
-        if(this.tileStates[row][col].team == "0"){
-            let tile:Tile = this.tileStates[row][col]
-            let trail:Trail = new Trail(team, source, tile)
-            tile.hasTrail = true
-            tile.trail = trail
-            this.tileStates[row][col] = tile
-            this.tileStates.forEach(tile =>{
-                //console.log(tile)
-            })
-            return
-        }
-
         const destination:Tile = this.tileStates[row][col]
         if(destination.hasTrail){
             const deletedSource:boolean = this.destroyTrail(destination.trail, source)
@@ -45,22 +33,25 @@ export class Board{
                 return
             }
         }
-
-        if(destination.team == team){
+        if(destination.team != team){
+            let trail:Trail = new Trail(team, source, destination)
+            destination.hasTrail = true
+            destination.trail = trail
+            this.tileStates.forEach(tile =>{
+                //console.log(tile)
+            })
+            return
+        }
+        else if(destination.team == team){
             let currTile = source
             while(currTile.hasTrail){
                 currTile.team = team
                 let a = currTile
-                currTile = currTile.trail.previous
-                a.trail.destroy()
+                currTile = currTile.trail.getPreviousTile(this.tileStates)
+                a.trail.destroy(this.tileStates)
             }
             this.completeTrail(source)
         }
-        else {
-            destination.hasTrail = true;
-            destination.trail = new Trail(team, source, destination)
-        }
-
 
         //this.state.push(t)
     }
@@ -69,28 +60,28 @@ export class Board{
     // removes entire trail and returns true if source was in the trail
     destroyTrail(trail:Trail, source:Tile){
         let containsSource:boolean = false;
-        let btile:Tile = trail.previous
+        let btile:Tile = trail.getPreviousTile(this.tileStates)
         while(btile.hasTrail){
             if(btile == source){
                 containsSource = true;
             }
 
             const a = btile
-            btile = btile.trail.previous
+            btile = btile.trail.getPreviousTile(this.tileStates)
 
-            a.trail.destroy()      
+            a.trail.destroy(this.tileStates)      
         }
 
         let ftrail:Trail = trail.next
         while(ftrail != undefined){
-            if(ftrail.tile == source){
+            if(ftrail.tile[0] == source.row && ftrail.tile[1] == source.column){
                 containsSource = true;
             }
 
             const a = ftrail
             ftrail = ftrail.next
 
-            a.destroy()
+            a.destroy(this.tileStates)
 
         }
 
@@ -99,7 +90,7 @@ export class Board{
 
     completeTrail(source:Tile){
         let row = source.row;
-        let col = source.col
+        let col = source.column
         if(row < this.height - 1)   this.floodFill(row + 1, col, source.team)
         if(row > 0)                 this.floodFill(row - 1, col, source.team)
         if(col < this.width - 1)    this.floodFill(row, col + 1, source.team)
@@ -116,20 +107,40 @@ export class Board{
         stack.push(this.tileStates[row][col])
         let inside:boolean = true;
         while (stack.length != 0){
-            let currentTile:Tile = stack.pop()
+            console.log("start: ")
+
+            const b = stack.pop()
+            console.log(b)
+            if(!b) console.log("error")
+            let currentTile:Tile = b
             if(currentTile.team == team){
                 continue
             }
             
-            if(currentTile.row == 0 || currentTile.col == 0 || currentTile.row == this.height || currentTile.col == this.width){
+            if(currentTile.row == 0 || currentTile.column == 0 || currentTile.row == this.height - 1 || currentTile.column == this.width - 1){
                 inside = false
                 break
             }
             checked.push(currentTile);
-            if(!checked.includes(this.tileStates[currentTile.row + 1][currentTile.col])) stack.push(this.tileStates[currentTile.row + 1][currentTile.col])
-            if(!checked.includes(this.tileStates[currentTile.row - 1][currentTile.col])) stack.push(this.tileStates[currentTile.row - 1][currentTile.col])
-            if(!checked.includes(this.tileStates[currentTile.row][currentTile.col + 1])) stack.push(this.tileStates[currentTile.row][currentTile.col + 1])
-            if(!checked.includes(this.tileStates[currentTile.row][currentTile.col - 1])) stack.push(this.tileStates[currentTile.row][currentTile.col - 1])
+            console.log("checking these: ")
+            if(!checked.includes(this.tileStates[currentTile.row + 1][currentTile.column])) {
+                console.log(this.tileStates[currentTile.row + 1][currentTile.column])
+                stack.push(this.tileStates[currentTile.row + 1][currentTile.column])
+            }
+            if(!checked.includes(this.tileStates[currentTile.row - 1][currentTile.column])) {
+                console.log(this.tileStates[currentTile.row - 1][currentTile.column])
+                stack.push(this.tileStates[currentTile.row - 1][currentTile.column])
+            }
+            if(!checked.includes(this.tileStates[currentTile.row][currentTile.column + 1])) {
+                console.log(this.tileStates[currentTile.row][currentTile.column + 1])
+
+                stack.push(this.tileStates[currentTile.row][currentTile.column + 1])
+            }
+            if(!checked.includes(this.tileStates[currentTile.row][currentTile.column - 1])) {
+                console.log(this.tileStates[currentTile.row][currentTile.column - 1])
+
+                stack.push(this.tileStates[currentTile.row][currentTile.column - 1])
+            }
 
         }
         if(inside){
@@ -169,13 +180,13 @@ export class Board{
 
 export class Tile{
     row:number;
-    col:number;
+    column:number;
     team: string;
     hasTrail:boolean;
     trail:Trail;
     constructor(row: number,col: number, team:string){
         this.row = row;
-        this.col = col;
+        this.column = col;
         this.team = team;
         this.hasTrail = false;
     }
@@ -185,27 +196,32 @@ export class Tile{
 
 class Trail{
     head:boolean
-    previous:Tile
+    previous:Array<number>
     next:Trail
-    tile:Tile
+    tile:Array<number>
     team:string
     constructor(team:string, sourceTile:Tile, tile:Tile){
         this.head = true;
 
         this.team = team;
 
-        this.previous = sourceTile;
+        this.previous = [sourceTile.row, sourceTile.column];
         if(sourceTile.hasTrail){
             sourceTile.trail.next = this
         }
 
-        this.tile = tile;
+        this.tile = [tile.row, tile.column];
     }
+    getTile(tileStates: Array<Array<Tile>>){
+        return tileStates[this.tile[0]][this.tile[1]]
+    }
+    getPreviousTile(tileStates: Array<Array<Tile>>){
+        return tileStates[this.previous[0]][this.previous[1]]
+    }
+    destroy(tileStates: Array<Array<Tile>>){
 
-    destroy(){
-
-        this.tile.hasTrail = false
-        this.tile.trail = undefined
+        this.getTile(tileStates).hasTrail = false
+        this.getTile(tileStates).trail = undefined
 
         this.previous = undefined
         this.next = undefined
