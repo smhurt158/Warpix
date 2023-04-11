@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import Grid from "./components/grid";
-import googleOneTap from "google-one-tap";
+//import googleOneTap from "google-one-tap";
 const options = {
   client_id:process.env.REACT_APP_GOOGLE_CLIENT_ID,
-  context:"signin"
+  context:"signin",
+  auto_select: false
 }
 export default function App() {
   const [loginData,setLoginData] = useState(
@@ -12,9 +13,21 @@ export default function App() {
   );
 
   useEffect(()=>{
-    if(!loginData){
-      googleOneTap(options, async (response)=>{
-        console.log(response)
+    
+    
+   
+      
+    
+  })
+
+  const handleLogout = () =>{
+    localStorage.removeItem("loginData");
+    setLoginData(null);
+  }
+  const handleLogin = async () =>{
+    window.google.accounts.id.initialize({
+      client_id: options.client_id,
+      callback: async (response)=>{
         const res = await fetch("/google-login", {
           method: "POST",
           body: JSON.stringify({
@@ -24,18 +37,18 @@ export default function App() {
             "Content-Type": "application/json",
           }
         })
-
+    
         const data = await res.json();
         setLoginData(data);
-        console.log(data)
         localStorage.setItem("loginData", JSON.stringify(data));
-      })
-    }
-  }, [loginData])
-
-  const handleLogout = () =>{
-    localStorage.removeItem("loginData");
-    setLoginData(null);
+      },
+      auto_select: false,
+      cancel_on_tap_outside: false,
+      context: "signin"
+    });
+    window.google.accounts.id.prompt();
+    
+    
   }
 
 
@@ -65,7 +78,7 @@ export default function App() {
           <Grid email={loginData.email}/>
           </div>
         ):(
-          <div>Not logged in</div>
+          <button onClick={handleLogin}>Logout </button>
         )}
       </div>
 

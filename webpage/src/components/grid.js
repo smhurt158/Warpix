@@ -6,24 +6,23 @@ const Grid = ({ email
   const [tileStates, setTileStates] = useState([])
 
 useEffect(() => {
-    fetch('/state',{
-      method: 'get',
-      dataType: 'json',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        data = data.map(tile =>{
-          tile.selected = false;
-          return tile;
-        })
-        setTileStates(data)
-        console.log(data)
-      });
-  }, []);
+  fetch('/state',{
+    method: 'get',
+    dataType: 'json',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      data = data.map(tile =>{
+        tile.selected = false;
+        return tile;
+      })
+      setTileStates(data)
+    });
+}, []);
 
   const OnSelected = (tile) => {
     if(selectedTile == null){

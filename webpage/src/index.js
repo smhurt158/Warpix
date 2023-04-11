@@ -5,6 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+if (typeof window !== "undefined" && window.document) {
+  const googleScript = document.createElement("script");
+  googleScript.src = "https://accounts.google.com/gsi/client";
+  googleScript.async = true;
+  googleScript.defer = true;
+  document.head.appendChild(googleScript);
+}
 root.render(
   <React.StrictMode>
     <App />
