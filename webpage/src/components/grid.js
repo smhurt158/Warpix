@@ -61,7 +61,7 @@ useEffect(() => {
       {tileStates.map((row) => (
         <ul className="row" key={row[0].row}>
           {row.map((tile) => (
-            <Tile tile={tile} OnSelected={OnSelected} />
+            <Tile key={tile.row * 6 + tile.column} tile={tile} OnSelected={OnSelected} />
           ))}
         </ul>
       ))}
