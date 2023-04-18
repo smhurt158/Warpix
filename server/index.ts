@@ -2,32 +2,18 @@ import * as express from 'express';
 import { Board, Tile } from './game-state';
 import * as cors from 'cors'
 import * as dotenv from 'dotenv'
-import {OAuth2Client} from 'google-auth-library'
 import { Player } from './player';
 import * as http from 'http';
 import * as WebSocket from 'ws';
+import { AccountManager } from './accounts-manager';
 dotenv.config();
-const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+
+const am = new AccountManager();
+
 const [width, height] = [6, 6]
-const users:Array<Player> = [
-    {
-        email: "hurt3335@gmail.com",
-        name: "Sean Hurt",
-        team: "2",
-        lastMove: new Date()
-    },
-    {
-        email: "lordoftheseans@gmail.com",
-        name: "Sean Hurt",
-        team: "1",
-        lastMove: new Date()
-    },
-];
+
 const webSocketConnections:Array<WebSocket> = [];
-function upsert(array:Array<Player>, player:Player){
-    const i = array.findIndex((_item) => _item.email === player.email);
-    if (i < 0) array.push(player)
-}
+
 
 const app = express();
 const server = http.createServer(app);
@@ -55,13 +41,13 @@ app.post('/reset', (req, res) => {
 app.post('/move', (req, res) => {
     const body = req.body
 
-    const i = users.findIndex((_item) => _item.email === body.player.email);
-    if (i < 0) {
+    const user:Player = am.getUser(body.player.email);
+    if (!user) {
         res.status(400).send('user not found');
         return;
     }
     //console.log(users[i])
-    if(!gameBoard.makeMove(body.row, body.col, users[i].team, gameBoard.tileStates[body.srow][body.scol])){
+    if(!gameBoard.makeMove(body.row, body.col, user.team, gameBoard.tileStates[body.srow][body.scol])){
         res.status(400).send('Illegal Move');
         return;
     }
@@ -72,12 +58,7 @@ app.post('/move', (req, res) => {
 app.post('/google-login', async (req, res) => {
     //console.log("player added")
     const {token} = req.body;
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.CLIENT_ID,
-    })
-    const {name, email, picture} = ticket.getPayload();
-    upsert(users, new Player("1", name, new Date(0), email))
+    const [name, email, picture] = await am.handleGoogleLogin(token);
     res.status(201);
     res.json({name, email, picture})
 });
@@ -89,14 +70,11 @@ wss.on('connection', (ws:WebSocket)=>{
         let data = JSON.parse(message)
         console.log(data)
         if(data.type == "move"){
-            const i = users.findIndex((_item) => _item.email === data.player.email);
-            if(!gameBoard.makeMove(data.row, data.col, users[i].team, gameBoard.tileStates[data.srow][data.scol])){
+            const user:Player = am.getUser(data.player.email);
+            if(!gameBoard.makeMove(data.row, data.col, user.team, gameBoard.tileStates[data.srow][data.scol])){
                 console.log("invalid")
             }
         }
     });
-    ws.on('close',()=>{
-        console.log("closing")
-    })
 })
-server.listen(5000, () => console.log('Server running'));
+server.listen(5000, () => console.log('Server running on 5000'));
