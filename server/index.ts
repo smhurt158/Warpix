@@ -10,7 +10,7 @@ dotenv.config();
 
 const am = new AccountManager();
 
-const [width, height] = [6, 6]
+const [width, height] = [7, 7]
 
 const webSocketConnections:Array<WebSocket> = [];
 
@@ -46,7 +46,6 @@ app.post('/move', (req, res) => {
         res.status(400).send('user not found');
         return;
     }
-    //console.log(users[i])
     if(!gameBoard.makeMove(body.row, body.col, user.team, gameBoard.tileStates[body.srow][body.scol])){
         res.status(400).send('Illegal Move');
         return;
@@ -56,7 +55,6 @@ app.post('/move', (req, res) => {
 });
 
 app.post('/google-login', async (req, res) => {
-    //console.log("player added")
     const {token} = req.body;
     const [name, email, picture] = await am.handleGoogleLogin(token);
     res.status(201);
@@ -64,15 +62,12 @@ app.post('/google-login', async (req, res) => {
 });
 
 wss.on('connection', (ws:WebSocket)=>{
-    console.log("ws connected")
     webSocketConnections.push(ws)
     ws.on('message', (message:string)=>{
         let data = JSON.parse(message)
-        console.log(data)
         if(data.type == "move"){
             const user:Player = am.getUser(data.player.email);
             if(!gameBoard.makeMove(data.row, data.col, user.team, gameBoard.tileStates[data.srow][data.scol])){
-                console.log("invalid")
             }
         }
     });

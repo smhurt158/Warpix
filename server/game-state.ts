@@ -29,8 +29,8 @@ export class Board{
                 this.tileStates[i].push(t)
             }
         }
-        this.makeInitialMove(Math.floor(this.height/2) - 1, Math.floor(this.width/4), "1")
-        this.makeInitialMove(Math.floor(this.height/2) - 1, this.width - Math.ceil(this.width/4) - 1, "2")
+        this.makeInitialMove(Math.floor(this.height/2), Math.floor(this.width/4), "1")
+        this.makeInitialMove(Math.floor(this.height/2), this.width - Math.ceil(this.width/4), "2")
         this.handleChange();
     }
 
