@@ -1,22 +1,17 @@
+import { createFalse } from "typescript";
 
 export class Board{
     width: number;
     height: number;
     //state: Array<Tile>;
     tileStates: Array<Array<Tile>>
-
-    constructor(width: number, height: number){
+    handleChange:Function
+    constructor(width: number, height: number, handleChange:Function = ()=>{}){
         this.width = width;
         this.height = height;
+        this.handleChange = handleChange;
         //this.state = [];
-        this.tileStates = [];
-        for(let i = 0; i < this.height; i ++){
-            this.tileStates.push(new Array<Tile>())
-            for(let j = 0; j < this.width; j ++){
-                let t = new Tile(i, j, "0")
-                this.tileStates[i].push(t)
-            }
-        }
+        this.initializeBoard();
     }
 
     makeInitialMove(row:number, col:number, team: string){
@@ -25,12 +20,61 @@ export class Board{
         this.tileStates[row][col] = t
     }
 
+    initializeBoard(){
+        this.tileStates = [];
+        for(let i = 0; i < this.height; i ++){
+            this.tileStates.push(new Array<Tile>())
+            for(let j = 0; j < this.width; j ++){
+                let t = new Tile(i, j, "0")
+                this.tileStates[i].push(t)
+            }
+        }
+        this.makeInitialMove(Math.floor(this.height/2) - 1, Math.floor(this.width/4), "1")
+        this.makeInitialMove(Math.floor(this.height/2) - 1, this.width - Math.ceil(this.width/4) - 1, "2")
+        this.handleChange();
+    }
+
+    checkMove(row:number, column:number, team: string, source: Tile){
+        //Valid Tiles
+        if(row >= this.height || column >= this.width || row < 0 || column < 0){
+            return false;
+        }
+        if(source.row >= this.height || source.column >= this.width || source.row < 0 || source.column < 0){
+            return false;
+        }
+
+        //Tiles 1 space away
+        const diff = source.row - row + source.column - column
+        const product = (source.row - row) * (source.column - column)
+        if((diff != 1 && diff != -1) || product != 0) return false
+
+        //coming from team's square/starting trail
+        if(source.team == team){
+            return true;
+        }
+
+        //continuing trail
+        if(!source.hasTrail){
+            return false;
+        }
+        if(source.trail.team != team){
+            return false;
+        }
+        if(!source.trail.head){
+            return false;
+        }
+        return true
+    }
     makeMove(row:number, col:number, team: string, source: Tile){
+        if(!this.checkMove(row, col, team, source)){
+            return false;
+        }
         const destination:Tile = this.tileStates[row][col]
         if(destination.hasTrail){
             const deletedSource:boolean = this.destroyTrail(destination.trail, source)
             if(deletedSource){
-                return
+                this.handleChange();
+                return true
             }
         }
         if(destination.team != team){
@@ -40,7 +84,8 @@ export class Board{
             this.tileStates.forEach(tile =>{
                 //console.log(tile)
             })
-            return
+            this.handleChange();
+            return true
         }
         else if(destination.team == team){
             let currTile = source
@@ -50,9 +95,10 @@ export class Board{
                 currTile = currTile.trail.getPreviousTile(this.tileStates)
                 a.trail.destroy(this.tileStates)
             }
-            this.completeTrail(source)
+            this.completeTrail(destination, source)
         }
-
+        this.handleChange();
+        return true
         //this.state.push(t)
     }
     
@@ -88,9 +134,15 @@ export class Board{
         return containsSource
     }
 
-    completeTrail(source:Tile){
+    completeTrail(destination:Tile, source:Tile){
         let row = source.row;
         let col = source.column
+        if(row < this.height - 1)   this.floodFill(row + 1, col, source.team)
+        if(row > 0)                 this.floodFill(row - 1, col, source.team)
+        if(col < this.width - 1)    this.floodFill(row, col + 1, source.team)
+        if(col > 0)                 this.floodFill(row, col - 1, source.team)
+        row = destination.row;
+        col = destination.column;
         if(row < this.height - 1)   this.floodFill(row + 1, col, source.team)
         if(row > 0)                 this.floodFill(row - 1, col, source.team)
         if(col < this.width - 1)    this.floodFill(row, col + 1, source.team)
@@ -107,11 +159,8 @@ export class Board{
         stack.push(this.tileStates[row][col])
         let inside:boolean = true;
         while (stack.length != 0){
-            console.log("start: ")
 
             const b = stack.pop()
-            console.log(b)
-            if(!b) console.log("error")
             let currentTile:Tile = b
             if(currentTile.team == team){
                 continue
@@ -122,22 +171,17 @@ export class Board{
                 break
             }
             checked.push(currentTile);
-            console.log("checking these: ")
             if(!checked.includes(this.tileStates[currentTile.row + 1][currentTile.column])) {
-                console.log(this.tileStates[currentTile.row + 1][currentTile.column])
                 stack.push(this.tileStates[currentTile.row + 1][currentTile.column])
             }
             if(!checked.includes(this.tileStates[currentTile.row - 1][currentTile.column])) {
-                console.log(this.tileStates[currentTile.row - 1][currentTile.column])
                 stack.push(this.tileStates[currentTile.row - 1][currentTile.column])
             }
             if(!checked.includes(this.tileStates[currentTile.row][currentTile.column + 1])) {
-                console.log(this.tileStates[currentTile.row][currentTile.column + 1])
 
                 stack.push(this.tileStates[currentTile.row][currentTile.column + 1])
             }
             if(!checked.includes(this.tileStates[currentTile.row][currentTile.column - 1])) {
-                console.log(this.tileStates[currentTile.row][currentTile.column - 1])
 
                 stack.push(this.tileStates[currentTile.row][currentTile.column - 1])
             }
@@ -208,6 +252,7 @@ class Trail{
         this.previous = [sourceTile.row, sourceTile.column];
         if(sourceTile.hasTrail){
             sourceTile.trail.next = this
+            sourceTile.trail.head = false;
         }
 
         this.tile = [tile.row, tile.column];

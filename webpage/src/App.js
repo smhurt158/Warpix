@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import Grid from "./components/grid";
+
 //import googleOneTap from "google-one-tap";
 const options = {
   client_id:process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -24,6 +25,7 @@ export default function App() {
     localStorage.removeItem("loginData");
     setLoginData(null);
   }
+
   const handleLogin = async () =>{
     window.google.accounts.id.initialize({
       client_id: options.client_id,
@@ -58,13 +60,7 @@ export default function App() {
   
   
 
-  const handleGridSize = () => {
-    const res = {
-      cells: parseInt(inputCells),
-      rows: parseInt(inputRows)
-    };
-    setGrid({ ...res });
-  };
+  
 
   return (
     <div className="app">
@@ -75,10 +71,13 @@ export default function App() {
             You "{loginData.name}" logged in as {loginData.email}
           </h3>
           <button onClick={handleLogout}>Logout </button>
-          <Grid email={loginData.email}/>
+          
+              <Grid email={loginData.email}/>
+            
+          
           </div>
         ):(
-          <button onClick={handleLogin}>Logout </button>
+          <button onClick={handleLogin}>Log In </button>
         )}
       </div>
 

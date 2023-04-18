@@ -87,7 +87,7 @@
     height: 40px;
     min-height: 40px;
     background-color: aquamarine;
-    margin: 10px;
+    margin: 1px;
   }
   
   .item2 {
@@ -95,7 +95,7 @@
     min-width: 40px;
     height: 40px;
     min-height: 40px;
-    margin: 10px;
+    margin: 1px;
     background-color: red;
   }
   .item2trail {
@@ -103,7 +103,7 @@
     min-width: 40px;
     height: 40px;
     min-height: 40px;
-    margin: 10px;
+    margin: 1px;
     background-color: rgba(255, 86, 86, 0.562);
   }
 
@@ -113,14 +113,14 @@
     height: 40px;
     min-height: 40px;
     background-color: aquamarine;
-    margin: 10px;  }
+    margin: 1px;  }
 
   .item1 {
     width: 40px;
     min-width: 40px;
     height: 40px;
     min-height: 40px;
-    margin: 10px;
+    margin: 1px;
     background-color: blue;
   }
   .item1trail {
@@ -128,13 +128,14 @@
     min-width: 40px;
     height: 40px;
     min-height: 40px;
-    margin: 10px;
+    margin: 1px;
     background-color: rgba(96, 170, 255, 0.548);
   }
   .source{
     box-sizing: border-box;
     border-style: solid;
-    border-radius: 5%;
+    border-radius: .00005%;
+    border-width: .5px;
   }
   input {
     margin: 20px auto;
