@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "tsc server/game-state.ts && tsc server/accounts-manager.ts && tsc server/player.ts && tsc server/index.ts",
     "test": "echo test command not implemented",
-    "start": "tsc server/index.ts && node server/index.js",
+    "start": "node server/index.js",
     "game-state-test": "tsc server/game-state.ts && node server/game-state-tester.js",
     "build": "cd webpage && npm install && npm run build"
   },
