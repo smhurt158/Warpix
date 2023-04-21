@@ -8,14 +8,32 @@ const Grid = ({ email
   const [selectedTile, setSelectedTile] = useState(null)
   const [tileStates, setTileStates] = useState([])
 
-
+  useEffect(() => {
+    fetch('/state',{
+      method: 'get',
+      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        data = data.map(tile =>{
+          tile.selected = false;
+          return tile;
+        })
+        setTileStates(data)
+      });
+  }, []);
   const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
     onOpen: () =>{
       console.log("websocket conncected")
     }
   })
   useEffect(() => {
-    console.log(lastMessage)
+    console.log("last:", lastMessage)
+    if(!lastMessage) return
     // fetch('/state',{
     //   method: 'get',
     //   dataType: 'json',
@@ -32,8 +50,9 @@ const Grid = ({ email
     //     })
     //     setTileStates(data)
     //   });
-    if(lastMessage.type === "state"){
-      const data = lastMessage.data.map(tile =>{
+    let info = JSON.parse(lastMessage.data);
+    if(info.type === "state"){
+      const data = info.data.map(tile =>{
         tile.selected = false;
         return tile;
       })
@@ -88,7 +107,7 @@ const Grid = ({ email
     .then(data => { setTileStates(data) })
     .catch((err) => console.log(err))
     .finally(()=>{
-      if(!selectedTile) selectedTile.selected = false;
+      if(selectedTile) selectedTile.selected = false;
       setSelectedTile(null);
     })
   };
