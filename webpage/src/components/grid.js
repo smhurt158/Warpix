@@ -33,7 +33,7 @@ const Grid = ({ email
     //     setTileStates(data)
     //   });
     if(lastMessage.type === "state"){
-      data = lastMessage.data.map(tile =>{
+      const data = lastMessage.data.map(tile =>{
         tile.selected = false;
         return tile;
       })
