@@ -58,7 +58,8 @@ app.use(cors());
 var gameBoard = new game_state_1.Board(width, height, function () {
     for (var i = 0; i < webSocketConnections.length; i++) {
         webSocketConnections[i].send(JSON.stringify({
-            type: "change"
+            type: "state",
+            data: gameBoard.tileStates
         }));
     }
 });

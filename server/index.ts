@@ -27,7 +27,8 @@ app.use(cors())
 let gameBoard = new Board(width, height, () =>{
     for(let i = 0; i < webSocketConnections.length; i++){
         webSocketConnections[i].send(JSON.stringify({
-            type:"change"
+            type:"state",
+            data:gameBoard.tileStates
         }))
     }
 })

@@ -16,23 +16,29 @@ const Grid = ({ email
   })
   useEffect(() => {
     console.log(lastMessage)
-    fetch('/state',{
-      method: 'get',
-      dataType: 'json',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        data = data.map(tile =>{
-          tile.selected = false;
-          return tile;
-        })
-        setTileStates(data)
-      });
-    
+    // fetch('/state',{
+    //   method: 'get',
+    //   dataType: 'json',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     data = data.map(tile =>{
+    //       tile.selected = false;
+    //       return tile;
+    //     })
+    //     setTileStates(data)
+    //   });
+    if(lastMessage.type === "state"){
+      data = lastMessage.data.map(tile =>{
+        tile.selected = false;
+        return tile;
+      })
+      setTileStates(data)
+    }
   }, [lastMessage]);
 
   const OnSelected = (tile) => {
