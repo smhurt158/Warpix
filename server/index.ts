@@ -74,6 +74,7 @@ wss.on('connection', (ws:WebSocket)=>{
         let data = JSON.parse(message)
         if(data.type == "move"){
             const user:Player = am.getUser(data.player.email);
+            if(!data || !user || !user.team || !data.row || !data.col || !data.srow || !data.scol) ws.send("INVALID REQUEST")
             if(!gameBoard.makeMove(data.row, data.col, user.team, gameBoard.tileStates[data.srow][data.scol])){
             }
         }
