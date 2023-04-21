@@ -37,16 +37,16 @@ export class Board{
     checkMove(row:number, column:number, team: string, source: Tile){
         //Valid Tiles
         if(row >= this.height || column >= this.width || row < 0 || column < 0){
-            return false;
+            {console.log("dest");return false}
         }
         if(source.row >= this.height || source.column >= this.width || source.row < 0 || source.column < 0){
-            return false;
+            {console.log("source");return false}
         }
 
         //Tiles 1 space away
         const diff = source.row - row + source.column - column
         const product = (source.row - row) * (source.column - column)
-        if((diff != 1 && diff != -1) || product != 0) return false
+        if((diff != 1 && diff != -1) || product != 0) {console.log("distance");return false}
 
         //coming from team's square/starting trail
         if(source.team == team){
@@ -73,6 +73,7 @@ export class Board{
         if(destination.hasTrail){
             const deletedSource:boolean = this.destroyTrail(destination.trail, source)
             if(deletedSource){
+                console.log("deleted self")
                 this.handleChange();
                 return true
             }
@@ -130,7 +131,7 @@ export class Board{
             a.destroy(this.tileStates)
 
         }
-
+        trail.destroy(this.tileStates)
         return containsSource
     }
 

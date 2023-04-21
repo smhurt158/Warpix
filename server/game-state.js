@@ -31,16 +31,24 @@ var Board = /** @class */ (function () {
     Board.prototype.checkMove = function (row, column, team, source) {
         //Valid Tiles
         if (row >= this.height || column >= this.width || row < 0 || column < 0) {
-            return false;
+            {
+                console.log("dest");
+                return false;
+            }
         }
         if (source.row >= this.height || source.column >= this.width || source.row < 0 || source.column < 0) {
-            return false;
+            {
+                console.log("source");
+                return false;
+            }
         }
         //Tiles 1 space away
         var diff = source.row - row + source.column - column;
         var product = (source.row - row) * (source.column - column);
-        if ((diff != 1 && diff != -1) || product != 0)
+        if ((diff != 1 && diff != -1) || product != 0) {
+            console.log("distance");
             return false;
+        }
         //coming from team's square/starting trail
         if (source.team == team) {
             return true;
@@ -65,6 +73,7 @@ var Board = /** @class */ (function () {
         if (destination.hasTrail) {
             var deletedSource = this.destroyTrail(destination.trail, source);
             if (deletedSource) {
+                console.log("deleted self");
                 this.handleChange();
                 return true;
             }
@@ -114,6 +123,7 @@ var Board = /** @class */ (function () {
             ftrail = ftrail.next;
             a.destroy(this.tileStates);
         }
+        trail.destroy(this.tileStates);
         return containsSource;
     };
     Board.prototype.completeTrail = function (destination, source) {

@@ -74,8 +74,19 @@ wss.on('connection', (ws:WebSocket)=>{
         let data = JSON.parse(message)
         if(data.type == "move"){
             const user:Player = am.getUser(data.player.email);
-            if(!data || !user || !user.team || !data.row || !data.col || !data.srow || !data.scol) ws.send("INVALID REQUEST")
+            if(!user || !user.team){
+                console.log(user)
+
+                ws.send(JSON.stringify({"type":"error","message":"PLAYER NOT FOUND"}))
+                return
+            }
+            if(!data || data.row == null || data.row == undefined || data.col == null || data.col == undefined || data.srow == null || data.srow == undefined || data.scol == null || data.scol == undefined){
+                ws.send(JSON.stringify({"type":"error","message":"DATA MISSING"}))
+                console.log(data) 
+                return
+            }
             if(!gameBoard.makeMove(data.row, data.col, user.team, gameBoard.tileStates[data.srow][data.scol])){
+                ws.send(JSON.stringify({"type":"error","message":"INVALID MOVE"}))
             }
         }
     });

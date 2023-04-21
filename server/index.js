@@ -107,7 +107,18 @@ wss.on('connection', function (ws) {
         var data = JSON.parse(message);
         if (data.type == "move") {
             var user = am.getUser(data.player.email);
+            if (!user || !user.team) {
+                console.log(user);
+                ws.send(JSON.stringify({ "type": "error", "message": "PLAYER NOT FOUND" }));
+                return;
+            }
+            if (!data || data.row == null || data.row == undefined || data.col == null || data.col == undefined || data.srow == null || data.srow == undefined || data.scol == null || data.scol == undefined) {
+                ws.send(JSON.stringify({ "type": "error", "message": "DATA MISSING" }));
+                console.log(data);
+                return;
+            }
             if (!gameBoard.makeMove(data.row, data.col, user.team, gameBoard.tileStates[data.srow][data.scol])) {
+                ws.send(JSON.stringify({ "type": "error", "message": "INVALID MOVE" }));
             }
         }
     });
