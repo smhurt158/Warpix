@@ -6,6 +6,7 @@ import { Player } from './player';
 import * as http from 'http';
 import * as WebSocket from 'ws';
 import { AccountManager } from './accounts-manager';
+import * as path from 'path';
 dotenv.config();
 
 const am = new AccountManager();
@@ -14,8 +15,11 @@ const [width, height] = [7, 7]
 
 const webSocketConnections:Array<WebSocket> = [];
 
+const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(express.static(path.resolve(__dirname, '../webpage/build')));
+
 const server = http.createServer(app);
 const wss = new WebSocket.Server({server})
 app.use(express.json())
@@ -32,7 +36,9 @@ let gameBoard = new Board(width, height, () =>{
 app.get('/state', (req, res) => {
     res.send(gameBoard.tileStates);
 });
-
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'webpage/build', 'index.html'));
+});
 app.post('/reset', (req, res) => {
     gameBoard.initializeBoard();
     res.send(gameBoard.tileStates);
@@ -72,4 +78,4 @@ wss.on('connection', (ws:WebSocket)=>{
         }
     });
 })
-server.listen(5000, () => console.log('Server running on 5000'));
+server.listen(PORT, () => console.log('Server running on ', PORT));

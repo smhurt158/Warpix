@@ -9,7 +9,7 @@ const Grid = ({ email
   const [tileStates, setTileStates] = useState([])
 
 
-  const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:5000",{
+  const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
     onOpen: () =>{
       console.log("websocket conncected")
     }
