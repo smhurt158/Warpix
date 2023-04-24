@@ -15,15 +15,7 @@ const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
 const webSocketConnections:Array<WebSocket> = [];
 
-const controller:Controller = new Controller((state) => {
-    for(let i = 0; i < webSocketConnections.length; i++){
-         webSocketConnections[i].send(JSON.stringify({
-            type:"state",
-            data:state
-        }))
-    }
-}
-);
+const controller:Controller = new Controller((state) => broadcast("state", state));
 
 function broadcast(type:string, data:any) {
     for(let i = 0; i < webSocketConnections.length; i++){
@@ -106,8 +98,10 @@ wss.on('connection', (ws:WebSocket)=>{
             }
         }
     });
-    ws.on('close', (message:string)=>{
+    ws.on('close', ()=>{
         console.log("Connection closed")
     });
 })
+
+
 server.listen(PORT, () => console.log('Server running on ', PORT));
