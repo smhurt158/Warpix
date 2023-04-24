@@ -47,14 +47,15 @@ var google_auth_library_1 = require("google-auth-library");
 dotenv.config();
 var client = new google_auth_library_1.OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 var webSocketConnections = [];
-var controller = new controller_1.Controller(function (state) {
+var controller = new controller_1.Controller(function (state) { return broadcast("state", state); });
+function broadcast(type, data) {
     for (var i = 0; i < webSocketConnections.length; i++) {
         webSocketConnections[i].send(JSON.stringify({
-            type: "state",
-            data: state
+            type: type,
+            data: data
         }));
     }
-});
+}
 var PORT = process.env.PORT || 3001;
 var app = express();
 app.use(express.static(path.resolve(__dirname, '../webpage/build')));
@@ -135,7 +136,7 @@ wss.on('connection', function (ws) {
             }
         }
     });
-    ws.on('close', function (message) {
+    ws.on('close', function () {
         console.log("Connection closed");
     });
 });
