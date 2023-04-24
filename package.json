@@ -4,7 +4,7 @@
   "description": "backend of pixel based team game",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc server/game-state.ts && tsc server/accounts-manager.ts && tsc server/player.ts && tsc server/index.ts",
+    "compile": "tsc server/index.ts",
     "test": "echo test command not implemented",
     "start": "node server/index.js",
     "game-state-test": "tsc server/game-state.ts && node server/game-state-tester.js",

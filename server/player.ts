@@ -1,12 +1,10 @@
 export class Player{
     team:string;
-    name:string;
     lastMove:Date;
-    email:string;
-    constructor(team, name, lastMove, email){
+    username:string;
+    constructor(team, lastMove, username){
         this.team = team;
-        this.name = name;
         this.lastMove = lastMove;
-        this.email = email;
+        this.username = username;
     }
 }

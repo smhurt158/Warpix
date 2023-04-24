@@ -26,7 +26,7 @@ var Board = /** @class */ (function () {
         }
         this.makeInitialMove(Math.floor(this.height / 2), Math.floor(this.width / 4), "1");
         this.makeInitialMove(Math.floor(this.height / 2), this.width - Math.ceil(this.width / 4), "2");
-        this.handleChange();
+        this.handleChange(this.tileStates);
     };
     Board.prototype.checkMove = function (row, column, team, source) {
         //Valid Tiles
@@ -74,7 +74,7 @@ var Board = /** @class */ (function () {
             var deletedSource = this.destroyTrail(destination.trail, source);
             if (deletedSource) {
                 console.log("deleted self");
-                this.handleChange();
+                this.handleChange(this.tileStates);
                 return true;
             }
         }
@@ -85,7 +85,7 @@ var Board = /** @class */ (function () {
             this.tileStates.forEach(function (tile) {
                 //console.log(tile)
             });
-            this.handleChange();
+            this.handleChange(this.tileStates);
             return true;
         }
         else if (destination.team == team) {
@@ -98,7 +98,7 @@ var Board = /** @class */ (function () {
             }
             this.completeTrail(destination, source);
         }
-        this.handleChange();
+        this.handleChange(this.tileStates);
         return true;
         //this.state.push(t)
     };

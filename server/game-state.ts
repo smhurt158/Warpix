@@ -1,5 +1,5 @@
 
-export type HandleBoardChange = () => void;
+export type HandleBoardChange = (tileStates:Array<Array<Tile>>) => void;
 
 export class Board{
     width: number;
@@ -32,7 +32,7 @@ export class Board{
         }
         this.makeInitialMove(Math.floor(this.height/2), Math.floor(this.width/4), "1")
         this.makeInitialMove(Math.floor(this.height/2), this.width - Math.ceil(this.width/4), "2")
-        this.handleChange();
+        this.handleChange(this.tileStates);
     }
 
     checkMove(row:number, column:number, team: string, source: Tile){
@@ -75,7 +75,7 @@ export class Board{
             const deletedSource:boolean = this.destroyTrail(destination.trail, source)
             if(deletedSource){
                 console.log("deleted self")
-                this.handleChange();
+                this.handleChange(this.tileStates);
                 return true
             }
         }
@@ -86,7 +86,7 @@ export class Board{
             this.tileStates.forEach(tile =>{
                 //console.log(tile)
             })
-            this.handleChange();
+            this.handleChange(this.tileStates);
             return true
         }
         else if(destination.team == team){
@@ -99,7 +99,7 @@ export class Board{
             }
             this.completeTrail(destination, source)
         }
-        this.handleChange();
+        this.handleChange(this.tileStates);
         return true
         //this.state.push(t)
     }

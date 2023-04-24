@@ -2,11 +2,10 @@
 exports.__esModule = true;
 exports.Player = void 0;
 var Player = /** @class */ (function () {
-    function Player(team, name, lastMove, email) {
+    function Player(team, lastMove, username) {
         this.team = team;
-        this.name = name;
         this.lastMove = lastMove;
-        this.email = email;
+        this.username = username;
     }
     return Player;
 }());
