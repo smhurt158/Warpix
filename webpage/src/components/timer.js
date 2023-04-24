@@ -11,7 +11,6 @@ const Timer = ({
   const [ready, setReady] = useState(false);
   useEffect(()=>{
     const interval = setInterval(() =>{
-      console.log(readyTime)
       if(Date.now() > readyTime + 1000 * 60 * .5){
         setReady(true)
       }

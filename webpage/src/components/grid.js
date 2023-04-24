@@ -44,7 +44,6 @@ const Grid = ({
         return response.json();
       })
       .then(data => {
-        console.log("time data:",data[0])
 
         setReadyTime(data[0])
       })
@@ -70,9 +69,7 @@ const Grid = ({
       setTileStates(data)
     }
     if(info.type === "time"){
-      console.log("ws time update")
       setReadyTime(info.data)
-      console.log(info.data)
 
     }
     if(info.type === "error"){
