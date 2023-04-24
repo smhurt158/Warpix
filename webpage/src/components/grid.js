@@ -3,7 +3,8 @@ import useWebSocket from 'react-use-websocket'
 import Tile from './tile';
 import {TransformWrapper, TransformComponent} from "react-zoom-pan-pinch"
 
-const Grid = ({ email
+const Grid = ({ 
+  email
 }) => {
   const [selectedTile, setSelectedTile] = useState(null)
   const [tileStates, setTileStates] = useState([])

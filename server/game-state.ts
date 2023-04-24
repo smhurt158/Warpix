@@ -1,4 +1,5 @@
-import { createFalse } from "typescript";
+
+export type HandleBoardChange = () => void;
 
 export class Board{
     width: number;
@@ -6,7 +7,7 @@ export class Board{
     //state: Array<Tile>;
     tileStates: Array<Array<Tile>>
     handleChange:Function
-    constructor(width: number, height: number, handleChange:Function = ()=>{}){
+    constructor(width: number, height: number, handleChange:HandleBoardChange = ()=>{}){
         this.width = width;
         this.height = height;
         this.handleChange = handleChange;

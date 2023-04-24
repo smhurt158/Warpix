@@ -46,7 +46,6 @@ var accounts_manager_1 = require("./accounts-manager");
 var path = require("path");
 dotenv.config();
 var am = new accounts_manager_1.AccountManager();
-var _a = [7, 7], width = _a[0], height = _a[1];
 var webSocketConnections = [];
 var PORT = process.env.PORT || 3001;
 var app = express();
@@ -55,7 +54,7 @@ var server = http.createServer(app);
 var wss = new WebSocket.Server({ server: server });
 app.use(express.json());
 app.use(cors());
-var gameBoard = new game_state_1.Board(width, height, function () {
+var gameBoard = new game_state_1.Board(7, 7, function () {
     for (var i = 0; i < webSocketConnections.length; i++) {
         webSocketConnections[i].send(JSON.stringify({
             type: "state",
@@ -121,6 +120,9 @@ wss.on('connection', function (ws) {
                 ws.send(JSON.stringify({ "type": "error", "message": "INVALID MOVE" }));
             }
         }
+    });
+    ws.on('close', function (message) {
+        console.log("Connection closed");
     });
 });
 server.listen(PORT, function () { return console.log('Server running on ', PORT); });

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Board, Tile } from './game-state';
+import { Board } from './game-state';
 import * as cors from 'cors'
 import * as dotenv from 'dotenv'
 import { Player } from './player';
@@ -11,7 +11,6 @@ dotenv.config();
 
 const am = new AccountManager();
 
-const [width, height] = [7, 7]
 
 const webSocketConnections:Array<WebSocket> = [];
 
@@ -24,7 +23,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({server})
 app.use(express.json())
 app.use(cors())
-let gameBoard = new Board(width, height, () =>{
+let gameBoard = new Board(7, 7, () =>{
     for(let i = 0; i < webSocketConnections.length; i++){
         webSocketConnections[i].send(JSON.stringify({
             type:"state",
@@ -89,6 +88,9 @@ wss.on('connection', (ws:WebSocket)=>{
                 ws.send(JSON.stringify({"type":"error","message":"INVALID MOVE"}))
             }
         }
+    });
+    ws.on('close', (message:string)=>{
+        console.log("Connection closed")
     });
 })
 server.listen(PORT, () => console.log('Server running on ', PORT));
