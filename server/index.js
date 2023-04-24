@@ -84,12 +84,22 @@ function handleGoogleLogin(token) {
 app.get('/state', function (req, res) {
     res.send(controller.getGameState());
 });
+app.get('/time', function (req, res) {
+    var user = req.query.user.toString();
+    console.log(user);
+    console.log(controller.getUser(user).lastMove);
+    res.send([controller.getUser(user).lastMove]);
+});
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, 'webpage/build', 'index.html'));
 });
 app.post('/reset', function (req, res) {
     controller.resetGame();
     res.send(controller.getGameState());
+});
+app.post('/add-user', function (req, res) {
+    var body = req.body;
+    controller.addUser(body.user);
 });
 // app.post('/move', (req, res) => {
 //     const body = req.body
@@ -133,7 +143,9 @@ wss.on('connection', function (ws) {
             var _a = controller.makeGameMove(data.player.email, data.row, data.col, data.srow, data.scol), success = _a[0], errorMessage = _a[1];
             if (!success) {
                 ws.send(JSON.stringify({ "type": "error", "message": errorMessage }));
+                return;
             }
+            ws.send(JSON.stringify({ type: "time", data: controller.getUser(data.player.email).lastMove }));
         }
     });
     ws.on('close', function () {

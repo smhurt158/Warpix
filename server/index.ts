@@ -49,13 +49,26 @@ async function handleGoogleLogin(token){
 app.get('/state', (req, res) => {
     res.send(controller.getGameState());
 });
+app.get('/time', (req, res) => {
+    let user:string = req.query.user.toString();
+    console.log(user)
+    console.log(controller.getUser(user).lastMove)
+    res.send([controller.getUser(user).lastMove]);
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'webpage/build', 'index.html'));
 });
+
+
 app.post('/reset', (req, res) => {
     controller.resetGame()
     res.send(controller.getGameState());
 })
+app.post('/add-user', (req, res) => {
+    const body = req.body;
+    controller.addUser(body.user)
+});
 
 // app.post('/move', (req, res) => {
 //     const body = req.body
@@ -95,7 +108,9 @@ wss.on('connection', (ws:WebSocket)=>{
             const [success, errorMessage] = controller.makeGameMove(data.player.email, data.row, data.col, data.srow, data.scol);
             if(!success){
                 ws.send(JSON.stringify({"type":"error","message":errorMessage}))
+                return
             }
+            ws.send(JSON.stringify({type:"time",data:controller.getUser(data.player.email).lastMove}))
         }
     });
     ws.on('close', ()=>{

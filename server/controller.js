@@ -12,13 +12,15 @@ var Controller = /** @class */ (function () {
     Controller.prototype.makeGameMove = function (username, row, column, srow, scolumn) {
         var user = this.accountManager.getUser(username);
         if (!user || !user.team) {
-            console.log("username:", username);
-            console.log("Users:", this.accountManager.users);
-            console.log("get result:", this.accountManager.getUser(username));
             return [false, "User not found"];
+        }
+        if (user.lastMove + 1000 * 60 * .5 > Date.now()) {
+            console.log(user.lastMove);
+            return [false, "Still on Cooldown"];
         }
         var moveCheck = this.gameBoard.makeMove(row, column, user.team, this.gameBoard.tileStates[srow][scolumn]);
         if (moveCheck) {
+            user.lastMove = Date.now();
             return [true, ""];
         }
         return [false, "Invalid Move"];
@@ -31,6 +33,9 @@ var Controller = /** @class */ (function () {
     };
     Controller.prototype.addUser = function (username) {
         this.accountManager.addUser(username);
+    };
+    Controller.prototype.getUser = function (username) {
+        return this.accountManager.getUser(username);
     };
     return Controller;
 }());

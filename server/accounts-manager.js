@@ -12,11 +12,11 @@ var AccountManager = /** @class */ (function () {
         if (!this.getUser(username)) {
             var newUser = void 0;
             if (this.team1Count > this.team2Count) {
-                newUser = new player_1.Player("2", new Date(), username);
+                newUser = new player_1.Player("2", 0, username);
                 this.team2Count++;
             }
             else {
-                newUser = new player_1.Player("1", new Date(), username);
+                newUser = new player_1.Player("1", 0, username);
                 this.team1Count++;
             }
             this.users.push(newUser);

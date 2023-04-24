@@ -14,12 +14,19 @@ export default function App() {
   );
 
   useEffect(()=>{
+    if(loginData){
+      fetch("/add-user", {
+        method: "POST",
+        body: JSON.stringify({
+          user:loginData.email
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+    }
     
-    
-   
-      
-    
-  })
+  },[])
 
   const handleLogout = () =>{
     localStorage.removeItem("loginData");
@@ -54,14 +61,6 @@ export default function App() {
   }
 
 
-  const [grid, setGrid] = useState([[{team:"0"}]]);
-  const [inputCells, setCells] = useState(grid.cells);
-  const [inputRows, setRows] = useState(grid.rows);
-  
-  
-
-  
-
   return (
     <div className="app">
       <div>
@@ -71,10 +70,7 @@ export default function App() {
             You "{loginData.name}" logged in as {loginData.email}
           </h3>
           <button onClick={handleLogout}>Logout </button>
-          
-              <Grid email={loginData.email}/>
-            
-          
+            <Grid username={loginData.email}/>
           </div>
         ):(
           <button onClick={handleLogin}>Log In </button>

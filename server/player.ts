@@ -1,6 +1,6 @@
 export class Player{
     team:string;
-    lastMove:Date;
+    lastMove:number;
     username:string;
     constructor(team, lastMove, username){
         this.team = team;

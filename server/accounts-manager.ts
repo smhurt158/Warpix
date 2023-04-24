@@ -12,11 +12,11 @@ export class AccountManager{
         if(!this.getUser(username)){
             let newUser;
             if(this.team1Count > this.team2Count){
-                newUser = new Player("2", new Date(), username)
+                newUser = new Player("2", 0, username)
                 this.team2Count++;
             }
             else{
-                newUser = new Player("1", new Date(), username)
+                newUser = new Player("1", 0, username)
                 this.team1Count++;
             }
             this.users.push(newUser)

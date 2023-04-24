@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import useWebSocket from 'react-use-websocket'
 import Tile from './tile';
+import Timer from './timer'
 import {TransformWrapper, TransformComponent} from "react-zoom-pan-pinch"
 
 const Grid = ({ 
-  email
+  username
 }) => {
   const [selectedTile, setSelectedTile] = useState(null)
   const [tileStates, setTileStates] = useState([])
+  const [readyTime, setReadyTime] = useState(0)
+  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     fetch('/state',{
@@ -25,32 +28,39 @@ const Grid = ({
           return tile;
         })
         setTileStates(data)
-      });
+      })
+      .catch(() =>{
+        console.log("state error")
+      })
+    fetch('/time?user='+username,{
+      method: 'get',
+      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log("time data:",data[0])
+
+        setReadyTime(data[0])
+      })
+      .catch(() =>{
+        console.log("time error")
+      })
   }, []);
+
+
   const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
     onOpen: () =>{
-      console.log("websocket conncected")
     }
   })
+  
   useEffect(() => {
-    console.log("last:", lastMessage)
     if(!lastMessage) return
-    // fetch('/state',{
-    //   method: 'get',
-    //   dataType: 'json',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     data = data.map(tile =>{
-    //       tile.selected = false;
-    //       return tile;
-    //     })
-    //     setTileStates(data)
-    //   });
     let info = JSON.parse(lastMessage.data);
     if(info.type === "state"){
       const data = info.data.map(tile =>{
@@ -59,9 +69,19 @@ const Grid = ({
       })
       setTileStates(data)
     }
+    if(info.type === "time"){
+      console.log("ws time update")
+      setReadyTime(info.data)
+      console.log(info.data)
+
+    }
+    if(info.type === "error"){
+      setErrorMessage(info.message)
+    }
   }, [lastMessage]);
 
   const OnSelected = (tile) => {
+    setErrorMessage("");
     if(selectedTile == null){
       tile.selected = true;
       setSelectedTile(tile);
@@ -92,7 +112,7 @@ const Grid = ({
       type:"move",
       "row": tile.row,
       "col": tile.column,
-      "player":{email},
+      "player":{email:username},
       "srow":selectedTile.row,
       "scol":selectedTile.column
     }))
@@ -129,9 +149,10 @@ const Grid = ({
           ))}
           
       <h2>
-        {lastMessage == null? "NULL":lastMessage.data}
+        {errorMessage}
       </h2>
       <button onClick={handleReset}>Reset</button>
+      <Timer key={readyTime} readyTime={readyTime}></Timer>
     </main>
   );
 };

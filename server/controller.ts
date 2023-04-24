@@ -18,13 +18,16 @@ export class Controller{
     makeGameMove(username:string, row:number, column:number, srow:number, scolumn:number){
         const user:Player = this.accountManager.getUser(username);
         if(!user || !user.team){
-            console.log("username:",username)
-            console.log("Users:",this.accountManager.users)
-            console.log("get result:",this.accountManager.getUser(username))
             return [false, "User not found"]
+        }
+        if(user.lastMove + 1000 * 60 * .5 > Date.now() ){
+            console.log(user.lastMove)
+
+            return [false, "Still on Cooldown"]
         }
         const moveCheck:boolean = this.gameBoard.makeMove(row, column, user.team, this.gameBoard.tileStates[srow][scolumn]);
         if(moveCheck){
+            user.lastMove = Date.now();
             return [true, ""]
         }
         return [false, "Invalid Move"]
@@ -41,5 +44,10 @@ export class Controller{
     addUser(username:string){
         this.accountManager.addUser(username);
     }
+
+    getUser(username:string){
+        return this.accountManager.getUser(username);
+    }
+
 }
 
