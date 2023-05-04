@@ -66,8 +66,11 @@ app.post('/reset', (req, res) => {
     res.send(controller.getGameState());
 })
 app.post('/add-user', (req, res) => {
+    console.log(req.body)
     const body = req.body;
-    controller.addUser(body.user)
+    controller.addUser(body.user);
+    const team = controller.getUser(body.user).team;
+    res.send({team})
 });
 
 // app.post('/move', (req, res) => {

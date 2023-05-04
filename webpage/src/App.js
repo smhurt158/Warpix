@@ -12,10 +12,11 @@ export default function App() {
   const [loginData,setLoginData] = useState(
     localStorage.getItem("loginData")? JSON.parse(localStorage.getItem("loginData")): null
   );
+  const [team, setTeam] = useState("loading")
 
   useEffect(()=>{
     if(loginData){
-      fetch("/add-user", {
+      const res = fetch("/add-user", {
         method: "POST",
         body: JSON.stringify({
           user:loginData.email
@@ -24,9 +25,18 @@ export default function App() {
           "Content-Type": "application/json",
         }
       })
-    }
-    
-  },[])
+        .then(res => res.json())
+        .then(data =>{
+          console.log(data.team)
+          if(data.team == 1){
+            setTeam("Blue");
+          }
+          else{
+            setTeam("Red");
+          }
+        })
+    }  
+  },[loginData])
 
   const handleLogout = () =>{
     localStorage.removeItem("loginData");
@@ -56,24 +66,25 @@ export default function App() {
       context: "signin"
     });
     window.google.accounts.id.prompt();
-    
-    
   }
 
 
   return (
     <div className="app">
       <div>
-        {loginData ? (
-          <div>
-          <h3>
-            You "{loginData.name}" logged in as {loginData.email}
-          </h3>
-          <button onClick={handleLogout}>Logout </button>
-            <Grid username={loginData.email}/>
-          </div>
-        ):(
+        {!loginData ? (
           <button onClick={handleLogin}>Log In </button>
+        ):(
+          <div>
+            <h3>
+              User: {loginData.email}
+            </h3>
+            <h3>
+              Team: {team}
+            </h3>
+            <button onClick={handleLogout}>Logout </button>
+              <Grid username={loginData.email}/>
+          </div>
         )}
       </div>
 

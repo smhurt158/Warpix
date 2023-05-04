@@ -50,27 +50,7 @@ const Grid = ({
       setSelectedTile(tile);
       return;
     }
-    // fetch('/move',{
-    //     method: 'POST',
-    //     mode: 'cors',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         "row": tile.row,
-    //         "col": tile.column,
-    //         "player":{email},
-    //         "srow":selectedTile.row,
-    //         "scol":selectedTile.column
-    //     })
-    // })
-    // .then(response => response.json())
-    // .then(data => { setTileStates(data) })
-    // .catch((err) => console.log(err))
-    // .finally(()=>{
-    //   selectedTile.selected = false;
-    //   setSelectedTile(null);
-    // })
+
     sendMessage(JSON.stringify({
       type:"move",
       "row": tile.row,
@@ -95,10 +75,6 @@ const Grid = ({
       setSelectedTile(null);
     })
   };
-//<TransformWrapper>
-//        <TransformComponent>
-//</TransformComponent>
-      //</TransformWrapper>
   return (
     <main>
       <div id="grid">

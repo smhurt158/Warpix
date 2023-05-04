@@ -49,6 +49,10 @@ var Board = /** @class */ (function () {
             console.log("distance");
             return false;
         }
+        //not source's previous
+        if (source.hasTrail && source.trail.previous[0] == row && source.trail.previous[1] == column) {
+            return false;
+        }
         //coming from team's square/starting trail
         if (source.team == team) {
             return true;
@@ -73,7 +77,6 @@ var Board = /** @class */ (function () {
         if (destination.hasTrail) {
             var deletedSource = this.destroyTrail(destination.trail, source);
             if (deletedSource) {
-                console.log("deleted self");
                 this.handleChange(this.tileStates);
                 return true;
             }

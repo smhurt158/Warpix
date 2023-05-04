@@ -98,8 +98,11 @@ app.post('/reset', function (req, res) {
     res.send(controller.getGameState());
 });
 app.post('/add-user', function (req, res) {
+    console.log(req.body);
     var body = req.body;
     controller.addUser(body.user);
+    var team = controller.getUser(body.user).team;
+    res.send({ team: team });
 });
 // app.post('/move', (req, res) => {
 //     const body = req.body
