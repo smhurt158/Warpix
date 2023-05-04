@@ -30,6 +30,8 @@ const Grid = ({
         return tile;
       })
       setTileStates(data)
+      document.documentElement.style.setProperty("--rowNum", data.length);
+      document.documentElement.style.setProperty("--colNum", data[0].length);
     }
     if(info.type === "time"){
       console.log(info.data)

@@ -11,7 +11,7 @@ export class Controller{
 
     constructor(updateClients:HandleClientUpdate){
       this.updateClients = updateClients;
-      this.gameBoard = new Board(20, 10, updateClients);
+      this.gameBoard = new Board(50, 25, updateClients);
       this.accountManager = new AccountManager();
     }
 
