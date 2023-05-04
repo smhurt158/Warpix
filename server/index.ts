@@ -112,6 +112,12 @@ wss.on('connection', (ws:WebSocket)=>{
             }
             ws.send(JSON.stringify({type:"time",data:controller.getUser(data.player.email).lastMove}))
         }
+        if(data.type == "initialize"){
+            ws.send(JSON.stringify({"type":"state","data":controller.getGameState()}))
+            if(controller.getUser(data.username)){
+                ws.send(JSON.stringify({"type":"time","data":controller.getUser(data.username).lastMove}))
+            }
+        }
     });
     ws.on('close', ()=>{
         console.log("Connection closed")

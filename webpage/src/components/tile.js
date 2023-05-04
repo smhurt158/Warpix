@@ -6,9 +6,7 @@ const Tile = ({
 
 }) => {
   return (
-    <main>
-        <li className={"item" + (tile.hasTrail? tile.trail.team + "trail": tile.team) + (tile.selected? " source": "")} onClick={()=>OnSelected(tile)} />
-    </main>
+    <li className={"tile " + (tile.hasTrail ? " tile--team" + tile.trail.team + "-trail": "tile--team" + tile.team) + (tile.selected? " source": "")} onClick={()=>OnSelected(tile)} />
   );
 };
 

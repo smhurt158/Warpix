@@ -9,52 +9,15 @@ const Grid = ({
 }) => {
   const [selectedTile, setSelectedTile] = useState(null)
   const [tileStates, setTileStates] = useState([])
-  const [readyTime, setReadyTime] = useState(0)
+  const [lastMoveTime, setLastMoveTime] = useState(Date.now())
   const [errorMessage, setErrorMessage] = useState("")
 
-  useEffect(() => {
-    fetch('/state',{
-      method: 'get',
-      dataType: 'json',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        data = data.map(tile =>{
-          tile.selected = false;
-          return tile;
-        })
-        setTileStates(data)
-      })
-      .catch(() =>{
-        console.log("state error")
-      })
-    fetch('/time?user='+username,{
-      method: 'get',
-      dataType: 'json',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-
-        setReadyTime(data[0])
-      })
-      .catch(() =>{
-        console.log("time error")
-      })
-  }, []);
-
-
-  const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
+  const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{ //window.location.origin.replace(/^http/, 'ws'),{
     onOpen: () =>{
+      sendMessage(JSON.stringify({
+        type:"initialize",
+        username:username
+      }))
     }
   })
   
@@ -69,7 +32,8 @@ const Grid = ({
       setTileStates(data)
     }
     if(info.type === "time"){
-      setReadyTime(info.data)
+      console.log(info.data)
+      setLastMoveTime(info.data)
 
     }
     if(info.type === "error"){
@@ -135,21 +99,28 @@ const Grid = ({
       //</TransformWrapper>
   return (
     <main>
-      <h1>Grid</h1>
-      
-          {tileStates.map((row) => (
-            <ul className="row" key={row[0].row}>
-              {row.map((tile) => (
-                <Tile key={tile.row * tileStates[0].length + tile.column} tile={tile} OnSelected={OnSelected} />
-              ))}
-            </ul>
-          ))}
+      <div id="grid">
+      <TransformWrapper>
+        <TransformComponent>
+          <div id="inner-grid">
+            {tileStates.map((row) => (
+              <ul className="row" key={row[0].row}>
+                {row.map((tile) => (
+                  <Tile key={tile.row * tileStates[0].length + tile.column} tile={tile} OnSelected={OnSelected} />
+                ))}
+              </ul>
+            ))}
+          </div>
+
           
+        </TransformComponent>  
+      </TransformWrapper>
+      </div>
       <h2>
         {errorMessage}
       </h2>
       <button onClick={handleReset}>Reset</button>
-      <Timer key={readyTime} readyTime={readyTime}></Timer>
+      <Timer key={lastMoveTime} startTime={lastMoveTime} duration={1000*30}></Timer>
     </main>
   );
 };
