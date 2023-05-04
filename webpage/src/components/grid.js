@@ -12,8 +12,9 @@ const Grid = ({
   const [lastMoveTime, setLastMoveTime] = useState(Date.now())
   const [errorMessage, setErrorMessage] = useState("")
 
-  const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{ //window.location.origin.replace(/^http/, 'ws'),{
-    onOpen: () =>{
+  const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
+  //const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
+      onOpen: () =>{
       sendMessage(JSON.stringify({
         type:"initialize",
         username:username

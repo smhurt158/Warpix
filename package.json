@@ -7,7 +7,7 @@
     "compile": "tsc server/index.ts",
     "test": "echo test command not implemented",
     "start": "node server/index.js",
-    "game-state-test": "tsc server/game-state.ts && node server/game-state-tester.js",
+    "game-state-test": "tsc server/game-state-test.ts && node server/game-state-test.js",
     "build": "cd webpage && npm install && npm run build"
   },
   "repository": {

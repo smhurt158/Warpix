@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.Tile = exports.Board = void 0;
+exports.Trail = exports.Tile = exports.Board = void 0;
 var Board = /** @class */ (function () {
     function Board(width, height, handleChange) {
         if (handleChange === void 0) { handleChange = function () { }; }
@@ -14,6 +14,17 @@ var Board = /** @class */ (function () {
         var t = new Tile(row, col, team);
         //this.state.push(t)
         this.tileStates[row][col] = t;
+    };
+    Board.prototype.clearBoard = function () {
+        this.tileStates = [];
+        for (var i = 0; i < this.height; i++) {
+            this.tileStates.push(new Array());
+            for (var j = 0; j < this.width; j++) {
+                var t = new Tile(i, j, "0");
+                this.tileStates[i].push(t);
+            }
+        }
+        this.handleChange(this.tileStates);
     };
     Board.prototype.initializeBoard = function () {
         this.tileStates = [];
@@ -254,3 +265,4 @@ var Trail = /** @class */ (function () {
     };
     return Trail;
 }());
+exports.Trail = Trail;

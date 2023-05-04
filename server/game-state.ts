@@ -20,7 +20,17 @@ export class Board{
         //this.state.push(t)
         this.tileStates[row][col] = t
     }
-
+    clearBoard(){
+        this.tileStates = [];
+        for(let i = 0; i < this.height; i ++){
+            this.tileStates.push(new Array<Tile>())
+            for(let j = 0; j < this.width; j ++){
+                let t = new Tile(i, j, "0")
+                this.tileStates[i].push(t)
+            }
+        }
+        this.handleChange(this.tileStates);
+    }
     initializeBoard(){
         this.tileStates = [];
         for(let i = 0; i < this.height; i ++){
@@ -244,7 +254,7 @@ export class Tile{
 
 
 
-class Trail{
+export class Trail{
     head:boolean
     previous:Array<number>
     next:Trail
