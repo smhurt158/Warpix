@@ -170,7 +170,8 @@
     position:relative;
     padding:32px;
     width:100%;
-    max-width: 75%;
+    max-width: 90vw;
+    max-height: 90vh;
     background-color: white;
 
   }
