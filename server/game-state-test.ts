@@ -73,6 +73,47 @@ function testBasicCapture(){
     return true
 }
 
+function testPocketCapture() {
+    let gameBoard = new Board(6, 6, ()=>{})
+    gameBoard.clearBoard();
+    gameBoard.makeInitialMove(0, 0, "1");
+
+    move(gameBoard,0,1,1,0,0)
+    continueLastMove(0,2)
+    continueLastMove(0,3)
+    continueLastMove(1,3)
+    continueLastMove(2,3)
+    continueLastMove(2,2)
+    continueLastMove(2,1)
+    continueLastMove(1,1)
+    continueLastMove(1,0)
+    continueLastMove(0,0)
+    for(let i = 0; i < 6; i++){
+        for(let j = 0; j < 6; j++){
+            if(i < 3 && j < 3){
+                if(!checkTile(gameBoard.tileStates[i][j], "1", false)){
+                    console.log("Problem on Tile: " + i + ", " +j)
+    
+                    console.log(gameBoard.toString())
+                    return false
+                }
+            }
+            else{
+                if(!checkTile(gameBoard.tileStates[i][j], "0", false)){
+                    console.log("Problem on Tile: " + i + ", " +j)
+    
+                    console.log(gameBoard.toString())
+                    return false
+                }
+            }
+
+        }
+    }
+    console.log(gameBoard.toString())
+
+    return true
+}
+
 function testDestroySelf(){
     let gameBoard = new Board(6, 6, ()=>{})
     gameBoard.clearBoard();
@@ -108,3 +149,4 @@ function testDestroySelf(){
 
 console.log(testBasicCapture())
 console.log(testDestroySelf())
+console.log(testPocketCapture())
