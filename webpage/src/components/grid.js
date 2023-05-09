@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useWebSocket from 'react-use-websocket'
 import Tile from './tile';
 import Timer from './timer'
 import {TransformWrapper, TransformComponent} from "react-zoom-pan-pinch"
+import Popup from './popup';
 
 const Grid = ({ 
   username
@@ -11,9 +12,10 @@ const Grid = ({
   const [tileStates, setTileStates] = useState([])
   const [lastMoveTime, setLastMoveTime] = useState(Date.now())
   const [errorMessage, setErrorMessage] = useState("Error: No errors")
-
-  const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
-  //const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
+  const [gameOver, setGameOver] = useState(false);
+  const winner = useRef()
+  //const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
+  const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
       onOpen: () =>{
       sendMessage(JSON.stringify({
         type:"initialize",
@@ -35,12 +37,19 @@ const Grid = ({
       document.documentElement.style.setProperty("--colNum", data[0].length);
     }
     if(info.type === "time"){
-      console.log(info.data)
       setLastMoveTime(info.data)
 
     }
     if(info.type === "error"){
       setErrorMessage("Error: " + info.message)
+    }
+    if(info.type === "winner"){
+      if(info.data != "0"){
+        winner.current = info.data;
+        console.log(winner.current)
+        setGameOver(true);
+      }
+      
     }
   }, [lastMessage]);
 
@@ -102,6 +111,10 @@ const Grid = ({
       </h2>
       <button onClick={handleReset}>Reset</button>
       <Timer key={lastMoveTime} startTime={lastMoveTime} duration={1000*30}></Timer>
+      <Popup trigger={gameOver} onClose={() => setGameOver(false)}>
+        <h1>GAME OVER!</h1>
+        <h1>Team {winner.current == "1" ? "Blue" : "Red"} Wins</h1>
+      </Popup>
     </main>
   );
 };

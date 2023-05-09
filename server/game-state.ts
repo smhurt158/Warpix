@@ -1,5 +1,6 @@
 
 export type HandleBoardChange = (tileStates:Array<Array<Tile>>) => void;
+export type HandleWinner = (winner:string) => void;
 
 export class Board{
     width: number;
@@ -7,14 +8,38 @@ export class Board{
     //state: Array<Tile>;
     tileStates: Array<Array<Tile>>
     handleChange:Function
-    constructor(width: number, height: number, handleChange:HandleBoardChange = ()=>{}){
+    handleWinner:HandleWinner
+    winner:string
+    constructor(width: number, height: number, handleChange:HandleBoardChange = ()=>{}, handleWinner:HandleWinner = ()=>{}){
         this.width = width;
         this.height = height;
         this.handleChange = handleChange;
         //this.state = [];
         this.initializeBoard();
+        this.winner = "0"
+        this.handleWinner = handleWinner
     }
 
+    checkWinner(){
+        let one = 0;
+        let two = 0;
+        for(let i = 0; i < this.height; i++){
+            for(let j = 0; j < this.width; j++){
+                if(this.tileStates[i][j].team == "1") one++;
+                if(this.tileStates[i][j].team == "2") two++;
+            }
+        }
+        if(one == 0 || two / (this.width * this.height) >= .6){
+            this.winner = "2"
+            this.handleWinner("2");
+            return
+        }
+        if(two == 0 || one / (this.width * this.height) >= .6){
+            this.winner = "1"
+            this.handleWinner("1");
+            return
+        }
+    }
     makeInitialMove(row:number, col:number, team: string){
         const t:Tile = new Tile(row, col, team)
         //this.state.push(t)
@@ -30,6 +55,7 @@ export class Board{
             }
         }
         this.handleChange(this.tileStates);
+        this.checkWinner()
     }
     initializeBoard(){
         this.tileStates = [];
@@ -43,6 +69,8 @@ export class Board{
         this.makeInitialMove(Math.floor(this.height/2), Math.floor(this.width/4), "1")
         this.makeInitialMove(Math.floor(this.height/2), this.width - Math.ceil(this.width/4), "2")
         this.handleChange(this.tileStates);
+        this.checkWinner()
+
     }
 
     checkMove(row:number, column:number, team: string, source: Tile){
@@ -92,6 +120,8 @@ export class Board{
             const deletedSource:boolean = this.destroyTrail(destination.trail, source)
             if(deletedSource){
                 this.handleChange(this.tileStates);
+                this.checkWinner()
+
                 return true
             }
         }
@@ -107,6 +137,8 @@ export class Board{
                 //console.log(tile)
             })
             this.handleChange(this.tileStates);
+            this.checkWinner()
+
             return true
         }
         else if(destination.team == team){
@@ -125,6 +157,8 @@ export class Board{
             }
         }
         this.handleChange(this.tileStates);
+        this.checkWinner()
+
         return true
         //this.state.push(t)
     }

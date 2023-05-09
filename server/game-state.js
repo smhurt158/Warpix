@@ -2,14 +2,39 @@
 exports.__esModule = true;
 exports.Trail = exports.Tile = exports.Board = void 0;
 var Board = /** @class */ (function () {
-    function Board(width, height, handleChange) {
+    function Board(width, height, handleChange, handleWinner) {
         if (handleChange === void 0) { handleChange = function () { }; }
+        if (handleWinner === void 0) { handleWinner = function () { }; }
         this.width = width;
         this.height = height;
         this.handleChange = handleChange;
         //this.state = [];
         this.initializeBoard();
+        this.winner = "0";
+        this.handleWinner = handleWinner;
     }
+    Board.prototype.checkWinner = function () {
+        var one = 0;
+        var two = 0;
+        for (var i = 0; i < this.height; i++) {
+            for (var j = 0; j < this.width; j++) {
+                if (this.tileStates[i][j].team == "1")
+                    one++;
+                if (this.tileStates[i][j].team == "2")
+                    two++;
+            }
+        }
+        if (one == 0 || two / (this.width * this.height) >= .6) {
+            this.winner = "2";
+            this.handleWinner("2");
+            return;
+        }
+        if (two == 0 || one / (this.width * this.height) >= .6) {
+            this.winner = "1";
+            this.handleWinner("1");
+            return;
+        }
+    };
     Board.prototype.makeInitialMove = function (row, col, team) {
         var t = new Tile(row, col, team);
         //this.state.push(t)
@@ -25,6 +50,7 @@ var Board = /** @class */ (function () {
             }
         }
         this.handleChange(this.tileStates);
+        this.checkWinner();
     };
     Board.prototype.initializeBoard = function () {
         this.tileStates = [];
@@ -38,6 +64,7 @@ var Board = /** @class */ (function () {
         this.makeInitialMove(Math.floor(this.height / 2), Math.floor(this.width / 4), "1");
         this.makeInitialMove(Math.floor(this.height / 2), this.width - Math.ceil(this.width / 4), "2");
         this.handleChange(this.tileStates);
+        this.checkWinner();
     };
     Board.prototype.checkMove = function (row, column, team, source) {
         //Valid Tiles
@@ -85,6 +112,7 @@ var Board = /** @class */ (function () {
             var deletedSource = this.destroyTrail(destination.trail, source);
             if (deletedSource) {
                 this.handleChange(this.tileStates);
+                this.checkWinner();
                 return true;
             }
         }
@@ -100,6 +128,7 @@ var Board = /** @class */ (function () {
                 //console.log(tile)
             });
             this.handleChange(this.tileStates);
+            this.checkWinner();
             return true;
         }
         else if (destination.team == team) {
@@ -118,6 +147,7 @@ var Board = /** @class */ (function () {
             }
         }
         this.handleChange(this.tileStates);
+        this.checkWinner();
         return true;
         //this.state.push(t)
     };

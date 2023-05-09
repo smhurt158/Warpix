@@ -15,7 +15,10 @@ const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
 const webSocketConnections:Array<WebSocket> = [];
 
-const controller:Controller = new Controller((state) => broadcast("state", state));
+const controller:Controller = new Controller((state) => broadcast("state", state), (winner)=> {
+    console.log(winner)
+    broadcast("winner", winner)
+});
 
 function broadcast(type:string, data:any) {
     for(let i = 0; i < webSocketConnections.length; i++){
@@ -121,6 +124,7 @@ wss.on('connection', (ws:WebSocket)=>{
             if(controller.getUser(data.username)){
                 ws.send(JSON.stringify({"type":"time","data":controller.getUser(data.username).lastMove}))
             }
+            ws.send(JSON.stringify({"type":"winner","data":controller.gameBoard.winner}))
         }
     });
     ws.on('close', ()=>{

@@ -47,7 +47,10 @@ var google_auth_library_1 = require("google-auth-library");
 dotenv.config();
 var client = new google_auth_library_1.OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 var webSocketConnections = [];
-var controller = new controller_1.Controller(function (state) { return broadcast("state", state); });
+var controller = new controller_1.Controller(function (state) { return broadcast("state", state); }, function (winner) {
+    console.log(winner);
+    broadcast("winner", winner);
+});
 function broadcast(type, data) {
     for (var i = 0; i < webSocketConnections.length; i++) {
         webSocketConnections[i].send(JSON.stringify({
@@ -156,6 +159,7 @@ wss.on('connection', function (ws) {
             if (controller.getUser(data.username)) {
                 ws.send(JSON.stringify({ "type": "time", "data": controller.getUser(data.username).lastMove }));
             }
+            ws.send(JSON.stringify({ "type": "winner", "data": controller.gameBoard.winner }));
         }
     });
     ws.on('close', function () {

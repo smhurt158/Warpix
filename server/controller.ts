@@ -6,12 +6,14 @@ export type HandleClientUpdate = (gameState:Array<Array<Tile>>) => void
 
 export class Controller{
     updateClients:HandleClientUpdate;
+    handleWin;
     gameBoard:Board;
     accountManager:AccountManager;
 
-    constructor(updateClients:HandleClientUpdate){
+    constructor(updateClients:HandleClientUpdate, handlewin){
+        this.handleWin = handlewin
       this.updateClients = updateClients;
-      this.gameBoard = new Board(20, 10, updateClients);
+      this.gameBoard = new Board(20, 10, updateClients, this.handleWin);
       this.accountManager = new AccountManager();
     }
 
@@ -20,7 +22,7 @@ export class Controller{
         if(!user || !user.team){
             return [false, "User not found"]
         }
-        if(user.lastMove + 1000 * 30 > Date.now() ){
+        if(user.lastMove + 1000 * 0 > Date.now() ){
             console.log(user.lastMove)
 
             return [false, "Still on Cooldown"]
