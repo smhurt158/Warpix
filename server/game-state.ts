@@ -48,10 +48,12 @@ export class Board{
     checkMove(row:number, column:number, team: string, source: Tile){
         //Valid Tiles
         if(row >= this.height || column >= this.width || row < 0 || column < 0){
-            {console.log("dest");return false}
+            console.log("dest");
+            return false
         }
         if(source.row >= this.height || source.column >= this.width || source.row < 0 || source.column < 0){
-            {console.log("source");return false}
+            console.log("source");
+            return false;
         }
 
         //Tiles 1 space away
@@ -106,12 +108,21 @@ export class Board{
         else if(destination.team == team){
             let currTile = source
             while(currTile.hasTrail){
+                //console.log(currTile)
                 currTile.team = team
+                if(currTile.sourcesTrail && currTile.team != team){
+                    console.log(currTile)
+                    this.destroyTrail(currTile.trailSourced, null);
+                }
+                this.completeTrail(currTile)
+                currTile = currTile.trail.getPreviousTile(this.tileStates)
+            }
+            currTile = source
+            while(currTile.hasTrail){
                 let a = currTile
                 currTile = currTile.trail.getPreviousTile(this.tileStates)
                 a.trail.destroy(this.tileStates)
             }
-            this.completeTrail(destination, source)
         }
         this.handleChange(this.tileStates);
         return true
@@ -150,19 +161,13 @@ export class Board{
         return containsSource
     }
 
-    completeTrail(destination:Tile, source:Tile){
-        let row = source.row;
-        let col = source.column
-        if(row < this.height - 1)   this.floodFill(row + 1, col, source.team)
-        if(row > 0)                 this.floodFill(row - 1, col, source.team)
-        if(col < this.width - 1)    this.floodFill(row, col + 1, source.team)
-        if(col > 0)                 this.floodFill(row, col - 1, source.team)
-        row = destination.row;
-        col = destination.column;
-        if(row < this.height - 1)   this.floodFill(row + 1, col, source.team)
-        if(row > 0)                 this.floodFill(row - 1, col, source.team)
-        if(col < this.width - 1)    this.floodFill(row, col + 1, source.team)
-        if(col > 0)                 this.floodFill(row, col - 1, source.team)
+    completeTrail(destination:Tile){
+        let row = destination.row;
+        let col = destination.column;
+        if(row < this.height - 1)   this.floodFill(row + 1, col, destination.team)
+        if(row > 0)                 this.floodFill(row - 1, col, destination.team)
+        if(col < this.width - 1)    this.floodFill(row, col + 1, destination.team)
+        if(col > 0)                 this.floodFill(row, col - 1, destination.team)
     }
 
     floodFill(row:number, col:number, team:string){
@@ -244,11 +249,14 @@ export class Tile{
     team: string;
     hasTrail:boolean;
     trail:Trail;
+    sourcesTrail:boolean;
+    trailSourced:Trail;
     constructor(row: number,col: number, team:string){
         this.row = row;
         this.column = col;
         this.team = team;
         this.hasTrail = false;
+        this.sourcesTrail = false;
     }
 }
 
@@ -266,7 +274,7 @@ export class Trail{
         this.team = team;
 
         this.previous = [sourceTile.row, sourceTile.column];
-        if(sourceTile.hasTrail){
+        if(sourceTile.hasTrail && sourceTile.trail.team == this.team){
             sourceTile.trail.next = this
             sourceTile.trail.head = false;
         }

@@ -20,7 +20,7 @@ export class Controller{
         if(!user || !user.team){
             return [false, "User not found"]
         }
-        if(user.lastMove + 1000 * 30 > Date.now() ){
+        if(user.lastMove + 1000 * 0 > Date.now() ){
             console.log(user.lastMove)
 
             return [false, "Still on Cooldown"]

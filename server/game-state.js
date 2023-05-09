@@ -42,16 +42,12 @@ var Board = /** @class */ (function () {
     Board.prototype.checkMove = function (row, column, team, source) {
         //Valid Tiles
         if (row >= this.height || column >= this.width || row < 0 || column < 0) {
-            {
-                console.log("dest");
-                return false;
-            }
+            console.log("dest");
+            return false;
         }
         if (source.row >= this.height || source.column >= this.width || source.row < 0 || source.column < 0) {
-            {
-                console.log("source");
-                return false;
-            }
+            console.log("source");
+            return false;
         }
         //Tiles 1 space away
         var diff = source.row - row + source.column - column;
@@ -105,12 +101,21 @@ var Board = /** @class */ (function () {
         else if (destination.team == team) {
             var currTile = source;
             while (currTile.hasTrail) {
+                //console.log(currTile)
                 currTile.team = team;
+                if (currTile.sourcesTrail && currTile.team != team) {
+                    console.log(currTile);
+                    this.destroyTrail(currTile.trailSourced, null);
+                }
+                this.completeTrail(currTile);
+                currTile = currTile.trail.getPreviousTile(this.tileStates);
+            }
+            currTile = source;
+            while (currTile.hasTrail) {
                 var a = currTile;
                 currTile = currTile.trail.getPreviousTile(this.tileStates);
                 a.trail.destroy(this.tileStates);
             }
-            this.completeTrail(destination, source);
         }
         this.handleChange(this.tileStates);
         return true;
@@ -140,27 +145,17 @@ var Board = /** @class */ (function () {
         trail.destroy(this.tileStates);
         return containsSource;
     };
-    Board.prototype.completeTrail = function (destination, source) {
-        var row = source.row;
-        var col = source.column;
+    Board.prototype.completeTrail = function (destination) {
+        var row = destination.row;
+        var col = destination.column;
         if (row < this.height - 1)
-            this.floodFill(row + 1, col, source.team);
+            this.floodFill(row + 1, col, destination.team);
         if (row > 0)
-            this.floodFill(row - 1, col, source.team);
+            this.floodFill(row - 1, col, destination.team);
         if (col < this.width - 1)
-            this.floodFill(row, col + 1, source.team);
+            this.floodFill(row, col + 1, destination.team);
         if (col > 0)
-            this.floodFill(row, col - 1, source.team);
-        row = destination.row;
-        col = destination.column;
-        if (row < this.height - 1)
-            this.floodFill(row + 1, col, source.team);
-        if (row > 0)
-            this.floodFill(row - 1, col, source.team);
-        if (col < this.width - 1)
-            this.floodFill(row, col + 1, source.team);
-        if (col > 0)
-            this.floodFill(row, col - 1, source.team);
+            this.floodFill(row, col - 1, destination.team);
     };
     Board.prototype.floodFill = function (row, col, team) {
         var _this = this;
@@ -235,6 +230,7 @@ var Tile = /** @class */ (function () {
         this.column = col;
         this.team = team;
         this.hasTrail = false;
+        this.sourcesTrail = false;
     }
     return Tile;
 }());
@@ -244,7 +240,7 @@ var Trail = /** @class */ (function () {
         this.head = true;
         this.team = team;
         this.previous = [sourceTile.row, sourceTile.column];
-        if (sourceTile.hasTrail) {
+        if (sourceTile.hasTrail && sourceTile.trail.team == this.team) {
             sourceTile.trail.next = this;
             sourceTile.trail.head = false;
         }

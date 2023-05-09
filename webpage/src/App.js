@@ -17,6 +17,7 @@ export default function App() {
 
   useEffect(()=>{
     if(loginData){
+      console.log(loginData)
       const res = fetch("/add-user", {
         method: "POST",
         body: JSON.stringify({

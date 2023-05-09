@@ -73,6 +73,47 @@ function testBasicCapture(){
     return true
 }
 
+function testCaptureEnemySourceBlock(){
+    let gameBoard = new Board(6, 6, ()=>{})
+    gameBoard.clearBoard();
+    gameBoard.makeInitialMove(2, 2, "1");
+    gameBoard.makeInitialMove(2, 4, "2");
+    move(gameBoard,1,2,1,2,2)
+    console.log(gameBoard.tileStates[2][2])
+
+    move(gameBoard,2,3,2,2,4)
+    continueLastMove(2,2)
+    continueLastMove(3,2)
+    continueLastMove(3,3)
+    continueLastMove(3,4)
+    continueLastMove(2,4)
+
+
+
+    for(let i = 0; i < 6; i++){
+        for(let j = 0; j < 6; j++){
+            if([2,3].includes(i) && [2,3,4].includes(j)){
+                if(!checkTile(gameBoard.tileStates[i][j], "2", false)){
+                    console.log("Problem on Tile: " + i + ", " +j)
+    
+                    console.log(gameBoard.toString())
+                    return false
+                }
+            }
+            else{
+                if(!checkTile(gameBoard.tileStates[i][j], "0", false)){
+                    console.log("Problem on Tile: " + i + ", " +j)
+    
+                    console.log(gameBoard.toString())
+                    return false
+                }
+            }
+
+        }
+    }
+    return true
+}
+
 function testPocketCapture() {
     let gameBoard = new Board(6, 6, ()=>{})
     gameBoard.clearBoard();
@@ -90,7 +131,7 @@ function testPocketCapture() {
     continueLastMove(0,0)
     for(let i = 0; i < 6; i++){
         for(let j = 0; j < 6; j++){
-            if(i < 3 && j < 3){
+            if(([0,1].includes(i) && j == 0) || ([0,1,2].includes(i) && [1,2,3].includes(j))){
                 if(!checkTile(gameBoard.tileStates[i][j], "1", false)){
                     console.log("Problem on Tile: " + i + ", " +j)
     
@@ -109,7 +150,6 @@ function testPocketCapture() {
 
         }
     }
-    console.log(gameBoard.toString())
 
     return true
 }
@@ -150,3 +190,4 @@ function testDestroySelf(){
 console.log(testBasicCapture())
 console.log(testDestroySelf())
 console.log(testPocketCapture())
+//console.log(testCaptureEnemySourceBlock())
