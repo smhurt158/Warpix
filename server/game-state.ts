@@ -151,7 +151,7 @@ export class Board{
 
         let ftrail:Trail = trail.next
         while(ftrail != undefined){
-            if(ftrail.tile[0] == source.row && ftrail.tile[1] == source.column){
+            if(source && ftrail.tile[0] == source.row && ftrail.tile[1] == source.column){
                 containsSource = true;
             }
 
@@ -168,10 +168,24 @@ export class Board{
     completeTrail(destination:Tile){
         let row = destination.row;
         let col = destination.column;
-        if(row < this.height - 1)   this.floodFill(row + 1, col, destination.team)
-        if(row > 0)                 this.floodFill(row - 1, col, destination.team)
-        if(col < this.width - 1)    this.floodFill(row, col + 1, destination.team)
-        if(col > 0)                 this.floodFill(row, col - 1, destination.team)
+        if(row < this.height - 1 && !this.isNextOrPrevious(destination, row + 1, col))   this.floodFill(row + 1, col, destination.team)
+        if(row > 0 && !this.isNextOrPrevious(destination, row - 1, col))                 this.floodFill(row - 1, col, destination.team)
+        if(col < this.width - 1 && !this.isNextOrPrevious(destination, row, col + 1))    this.floodFill(row, col + 1, destination.team)
+        if(col > 0 && !this.isNextOrPrevious(destination, row, col - 1))                 this.floodFill(row, col - 1, destination.team)
+    }
+
+    isNextOrPrevious(t:Tile, rowToCheck:number, colToCheck:number){
+        if(!t.hasTrail) return false;
+        let prevTile:Array<number> = t.trail.previous;
+        if(prevTile[0] == rowToCheck && prevTile[1] == colToCheck){
+            return true;
+        }
+        if(t.trail.head) return false;
+        let nextTile:Array<number> = t.trail.next.tile;
+        if(nextTile[0] == rowToCheck && nextTile[1] == colToCheck){
+            return true;
+        }
+        return false
     }
 
     floodFill(row:number, col:number, team:string){

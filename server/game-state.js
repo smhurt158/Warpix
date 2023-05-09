@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Trail = exports.Tile = exports.Board = void 0;
 var Board = /** @class */ (function () {
     function Board(width, height, handleChange) {
@@ -139,7 +139,7 @@ var Board = /** @class */ (function () {
         }
         var ftrail = trail.next;
         while (ftrail != undefined) {
-            if (ftrail.tile[0] == source.row && ftrail.tile[1] == source.column) {
+            if (source && ftrail.tile[0] == source.row && ftrail.tile[1] == source.column) {
                 containsSource = true;
             }
             var a = ftrail;
@@ -152,14 +152,29 @@ var Board = /** @class */ (function () {
     Board.prototype.completeTrail = function (destination) {
         var row = destination.row;
         var col = destination.column;
-        if (row < this.height - 1)
+        if (row < this.height - 1 && !this.isNextOrPrevious(destination, row + 1, col))
             this.floodFill(row + 1, col, destination.team);
-        if (row > 0)
+        if (row > 0 && !this.isNextOrPrevious(destination, row - 1, col))
             this.floodFill(row - 1, col, destination.team);
-        if (col < this.width - 1)
+        if (col < this.width - 1 && !this.isNextOrPrevious(destination, row, col + 1))
             this.floodFill(row, col + 1, destination.team);
-        if (col > 0)
+        if (col > 0 && !this.isNextOrPrevious(destination, row, col - 1))
             this.floodFill(row, col - 1, destination.team);
+    };
+    Board.prototype.isNextOrPrevious = function (t, rowToCheck, colToCheck) {
+        if (!t.hasTrail)
+            return false;
+        var prevTile = t.trail.previous;
+        if (prevTile[0] == rowToCheck && prevTile[1] == colToCheck) {
+            return true;
+        }
+        if (t.trail.head)
+            return false;
+        var nextTile = t.trail.next.tile;
+        if (nextTile[0] == rowToCheck && nextTile[1] == colToCheck) {
+            return true;
+        }
+        return false;
     };
     Board.prototype.floodFill = function (row, col, team) {
         var _this = this;
