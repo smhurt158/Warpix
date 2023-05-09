@@ -8,7 +8,7 @@ const Timer = ({
   duration
 }) => {
   const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(30);
+  const [seconds, setSeconds] = useState(duration / 1000);
   const [ready, setReady] = useState(false);
   useEffect(()=>{
     const interval = setInterval(() =>{

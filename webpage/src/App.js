@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import Grid from "./components/grid";
+import googleImage from "./google-signin.png";
 
 //import googleOneTap from "google-one-tap";
 const options = {
@@ -29,10 +30,10 @@ export default function App() {
         .then(data =>{
           console.log(data.team)
           if(data.team == 1){
-            setTeam("Blue");
+            setTeam("blue");
           }
           else{
-            setTeam("Red");
+            setTeam("red");
           }
         })
     }  
@@ -44,6 +45,7 @@ export default function App() {
   }
 
   const handleLogin = async () =>{
+    document.cookie = "g_state"+'=; Max-Age=-99999999;';
     window.google.accounts.id.initialize({
       client_id: options.client_id,
       callback: async (response)=>{
@@ -73,17 +75,23 @@ export default function App() {
     <div className="app">
       <div>
         {!loginData ? (
-          <button onClick={handleLogin}>Log In </button>
+          <div id="login">
+            <h1> Welcome To Warpix</h1>
+            <img className="art"></img>
+            <h2> Google Signin: </h2>
+            <img className="google-signin" src={googleImage} onClick={handleLogin}/>
+          </div>
         ):(
           <div>
             <h3>
               User: {loginData.email}
             </h3>
-            <h3>
-              Team: {team}
-            </h3>
+            
             <button onClick={handleLogout}>Logout </button>
-              <Grid username={loginData.email}/>
+            <h3>
+              Team: <span className={"team-text team-text--" + team}>{team}</span>
+            </h3>
+            <Grid username={loginData.email}/>
           </div>
         )}
       </div>

@@ -11,7 +11,7 @@ export class Controller{
 
     constructor(updateClients:HandleClientUpdate){
       this.updateClients = updateClients;
-      this.gameBoard = new Board(50, 25, updateClients);
+      this.gameBoard = new Board(20, 10, updateClients);
       this.accountManager = new AccountManager();
     }
 
@@ -20,7 +20,7 @@ export class Controller{
         if(!user || !user.team){
             return [false, "User not found"]
         }
-        if(user.lastMove + 1000 * 60 * .5 > Date.now() ){
+        if(user.lastMove + 1000 * 30 > Date.now() ){
             console.log(user.lastMove)
 
             return [false, "Still on Cooldown"]

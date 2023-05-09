@@ -124,8 +124,15 @@ wss.on('connection', (ws:WebSocket)=>{
     });
     ws.on('close', ()=>{
         console.log("Connection closed")
+        let index = webSocketConnections.findIndex((element:WebSocket) => {
+            return element == ws;
+        })
+        webSocketConnections.splice(index);
     });
 })
 
 
 server.listen(PORT, () => console.log('Server running on ', PORT));
+setInterval(function(){
+    broadcast("refresh-connection", "");
+}, 31000)

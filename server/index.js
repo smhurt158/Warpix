@@ -159,6 +159,13 @@ wss.on('connection', function (ws) {
     });
     ws.on('close', function () {
         console.log("Connection closed");
+        var index = webSocketConnections.findIndex(function (element) {
+            return element == ws;
+        });
+        webSocketConnections.splice(index);
     });
 });
 server.listen(PORT, function () { return console.log('Server running on ', PORT); });
+setInterval(function () {
+    broadcast("refresh-connection", "");
+}, 30000);

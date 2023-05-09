@@ -1,16 +1,18 @@
 :root {
   --rowNum: 50;
   --colNum: 100;
+  --vPercent: 60vh;
 }
 .app {
     font-family: sans-serif;
     text-align: center;
-    background-color: dimgrey;
+    background-color: rgba(69,68,67,255);
     height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     line-height: 1;
+    color: white;
   }
   
   
@@ -22,8 +24,8 @@
     align-content:center;
   }
   #inner-grid{
-    width:calc(var(--colNum)/var(--rowNum) * 80vh);
-    height:80vh;
+    width:calc(var(--colNum)/var(--rowNum) * var(--vPercent));
+    height:var(--vPercent);
   }
   ul.row {
     padding:0px;
@@ -36,16 +38,41 @@
     justify-content: center;
     align-items: center;
   }
-  
-  
+  .art{
+    content: url(./WarpixArt.png);
+  }
+  .google-signin {
+    width:300px;
+    height:100%;
+  }
+  .team-text {
+    text-shadow:
+    -1px -1px 0 white,
+    1px -1px 0 white,
+    -1px 1px 0 white,
+    1px 1px 0 white; 
+  }
+  .team-text--blue{
+    color:blue;
+  }
+
+  .team-text--red{
+    color:red;
+  }
+  .google-signin:hover {
+    content: url(google-signin-focus.png);
+  }
   h1 {
-    font-size: 16px;
+    font-size: 30px;
     font-weight: bold;
+  }
+  h3 {
+    font-size:25px;
   }
   
    
   .tile {
-    width: calc(100% / var(--colNum) - 1px);
+    width: calc(100% / var(--colNum));
     height: 100%;
     /*margin:0px 1px 0px 0px;*/
     margin:0px 0px 0px 0px;
@@ -69,6 +96,7 @@
   }
   .tile--team2 {
     background-color: red;
+    
   }
   .tile--team2-trail {
     background-color: rgba(255, 86, 86, 0.562);
@@ -89,9 +117,10 @@
   }
   
   .source{
+    border-color: black;
     box-sizing: border-box;
     border-style: solid;
-    border-width: .5px;
+    border-width: 2px;
   }
   
   .transform-component-module_wrapper__SPB86{
