@@ -128,13 +128,13 @@ wss.on('connection', (ws:WebSocket)=>{
         }
     });
     ws.on('close', ()=>{
-        console.log("Connection closed")
-        let index = webSocketConnections.findIndex((element:WebSocket) => {
-            return element == ws;
-        })
-        webSocketConnections.splice(index);
+        // console.log("Connection closed")
+        // let index = webSocketConnections.findIndex((element:WebSocket) => {
+        //     return element == ws;
+        // })
+        // webSocketConnections.splice(index);
 
-        console.log(webSocketConnections.length)
+        // console.log(webSocketConnections.length)
     });
 })
 

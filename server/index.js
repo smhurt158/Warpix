@@ -163,12 +163,12 @@ wss.on('connection', function (ws) {
         }
     });
     ws.on('close', function () {
-        console.log("Connection closed");
-        var index = webSocketConnections.findIndex(function (element) {
-            return element == ws;
-        });
-        webSocketConnections.splice(index);
-        console.log(webSocketConnections.length);
+        // console.log("Connection closed")
+        // let index = webSocketConnections.findIndex((element:WebSocket) => {
+        //     return element == ws;
+        // })
+        // webSocketConnections.splice(index);
+        // console.log(webSocketConnections.length)
     });
 });
 server.listen(PORT, function () { return console.log('Server running on ', PORT); });

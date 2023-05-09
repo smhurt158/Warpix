@@ -53,6 +53,7 @@ var Board = /** @class */ (function () {
         this.checkWinner();
     };
     Board.prototype.initializeBoard = function () {
+        this.winner = "0";
         this.tileStates = [];
         for (var i = 0; i < this.height; i++) {
             this.tileStates.push(new Array());
@@ -64,7 +65,6 @@ var Board = /** @class */ (function () {
         this.makeInitialMove(Math.floor(this.height / 2), Math.floor(this.width / 4), "1");
         this.makeInitialMove(Math.floor(this.height / 2), this.width - Math.ceil(this.width / 4), "2");
         this.handleChange(this.tileStates);
-        this.checkWinner();
     };
     Board.prototype.checkMove = function (row, column, team, source) {
         //Valid Tiles
