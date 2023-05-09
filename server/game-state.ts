@@ -58,6 +58,7 @@ export class Board{
         this.checkWinner()
     }
     initializeBoard(){
+        this.winner = "0";
         this.tileStates = [];
         for(let i = 0; i < this.height; i ++){
             this.tileStates.push(new Array<Tile>())
