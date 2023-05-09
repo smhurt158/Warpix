@@ -14,8 +14,8 @@ const Grid = ({
   const [errorMessage, setErrorMessage] = useState("Error: No errors")
   const [gameOver, setGameOver] = useState(false);
   const winner = useRef()
-  //const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
-  const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
+  const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
+  //const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
       onOpen: () =>{
       sendMessage(JSON.stringify({
         type:"initialize",
