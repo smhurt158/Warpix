@@ -97,6 +97,10 @@ export class Board{
         }
         if(destination.team != team){
             let trail:Trail = new Trail(team, source, destination)
+            if(source.team == team){
+                source.sourcesTrail =true;
+                source.trailSourced = trail;
+            }
             destination.hasTrail = true
             destination.trail = trail
             this.tileStates.forEach(tile =>{
@@ -109,19 +113,15 @@ export class Board{
             let currTile = source
             while(currTile.hasTrail){
                 //console.log(currTile)
-                currTile.team = team
                 if(currTile.sourcesTrail && currTile.team != team){
-                    console.log(currTile)
                     this.destroyTrail(currTile.trailSourced, null);
                 }
+                currTile.team = team
                 this.completeTrail(currTile)
                 currTile = currTile.trail.getPreviousTile(this.tileStates)
             }
-            currTile = source
-            while(currTile.hasTrail){
-                let a = currTile
-                currTile = currTile.trail.getPreviousTile(this.tileStates)
-                a.trail.destroy(this.tileStates)
+            if(source.hasTrail){
+                this.destroyTrail(source.trail, null)
             }
         }
         this.handleChange(this.tileStates);
@@ -134,7 +134,7 @@ export class Board{
     destroyTrail(trail:Trail, source:Tile){
         let containsSource:boolean = false;
         let btile:Tile = trail.getPreviousTile(this.tileStates)
-        while(btile.hasTrail){
+        while(btile.hasTrail && btile.trail.team == trail.team){
             if(btile == source){
                 containsSource = true;
             }
@@ -143,6 +143,10 @@ export class Board{
             btile = btile.trail.getPreviousTile(this.tileStates)
 
             a.trail.destroy(this.tileStates)      
+        }
+        if(btile.sourcesTrail){
+            btile.sourcesTrail = false;
+            btile.trailSourced = null;
         }
 
         let ftrail:Trail = trail.next

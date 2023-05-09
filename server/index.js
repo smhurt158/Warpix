@@ -135,6 +135,7 @@ app.post('/google-login', function (req, res) { return __awaiter(void 0, void 0,
 }); });
 wss.on('connection', function (ws) {
     webSocketConnections.push(ws);
+    console.log(webSocketConnections.length);
     ws.on('message', function (message) {
         var data = JSON.parse(message);
         if (data.type == "move") {
@@ -163,6 +164,7 @@ wss.on('connection', function (ws) {
             return element == ws;
         });
         webSocketConnections.splice(index);
+        console.log(webSocketConnections.length);
     });
 });
 server.listen(PORT, function () { return console.log('Server running on ', PORT); });

@@ -99,6 +99,7 @@ app.post('/google-login', async (req, res) => {
 
 wss.on('connection', (ws:WebSocket)=>{
     webSocketConnections.push(ws)
+    console.log(webSocketConnections.length)
     ws.on('message', (message:string)=>{
         let data = JSON.parse(message)
         if(data.type == "move"){
@@ -128,6 +129,8 @@ wss.on('connection', (ws:WebSocket)=>{
             return element == ws;
         })
         webSocketConnections.splice(index);
+
+        console.log(webSocketConnections.length)
     });
 })
 

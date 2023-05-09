@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./styles.css";
 import Grid from "./components/grid";
 import googleImage from "./google-signin.png";
-
+import Popup from "./components/popup";
+import tutorial1 from "./tutorial-1-edited.png"
+import tutorial2 from "./tutorial-2-edited.png"
+import tutorial3 from "./tutorial-3-edited.png"
+import tutorial4 from "./tutorial-4-edited.png"
+import tutorial5 from "./tutorial-5-edited.png"
 //import googleOneTap from "google-one-tap";
 const options = {
   client_id:process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -14,6 +19,7 @@ export default function App() {
     localStorage.getItem("loginData")? JSON.parse(localStorage.getItem("loginData")): null
   );
   const [team, setTeam] = useState("loading")
+  const [popup, setPopup] = useState(false)
 
   useEffect(()=>{
     if(loginData){
@@ -71,10 +77,14 @@ export default function App() {
     window.google.accounts.id.prompt();
   }
 
+  const handlePopup= () =>{
+
+  }
 
   return (
     <div className="app">
       <div>
+        <button onClick={()=> setPopup(true)}>How To Play</button>
         {!loginData ? (
           <div id="login">
             <h1> Welcome To Warpix</h1>
@@ -96,6 +106,36 @@ export default function App() {
           </div>
         )}
       </div>
+      <Popup trigger={popup} onClose={() => setPopup(false)}>
+        <ul className="popup-list">
+          <li>
+            <div>Click on a tile or the head of a trail owned by your team to select it</div>
+            <img className="tutorial" src={tutorial1}></img>
+          </li>
+          <li>
+            <div>Once selected, click an adjacent square to start or continue a trail respectively</div>
+            <img className="tutorial" src={tutorial2}></img>
+          </li>
+          <li>
+            <div>Return a trail to a tile owned by your own team to capture space</div>
+            <img className="tutorial" src={tutorial3}></img>
+
+          </li>
+        </ul>
+        <ul className="popup-list">
+          <li>
+            <div>Moving onto an trail destroys it</div>
+            <img className="tutorial" src={tutorial4}></img>
+          </li>
+          <li>
+            <div>You can destroy enemy AND friendly trails</div>
+            <img className="tutorial" src={tutorial5}></img>
+          </li>
+        </ul>
+
+        
+        
+      </Popup>
 
     </div>
   );

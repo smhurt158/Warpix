@@ -72,7 +72,6 @@ function testCaptureEnemySourceBlock() {
     gameBoard.makeInitialMove(2, 2, "1");
     gameBoard.makeInitialMove(2, 4, "2");
     move(gameBoard, 1, 2, 1, 2, 2);
-    console.log(gameBoard.tileStates[2][2]);
     move(gameBoard, 2, 3, 2, 2, 4);
     continueLastMove(2, 2);
     continueLastMove(3, 2);
@@ -165,4 +164,4 @@ function testDestroySelf() {
 console.log(testBasicCapture());
 console.log(testDestroySelf());
 console.log(testPocketCapture());
-//console.log(testCaptureEnemySourceBlock())
+console.log(testCaptureEnemySourceBlock());

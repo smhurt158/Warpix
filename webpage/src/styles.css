@@ -99,8 +99,8 @@
     
   }
   .tile--team2-trail {
-    background-color: rgba(255, 86, 86, 0.562);
-    border-color: darkred;
+    background-color: rgb(253, 138, 138);
+    border-color: rgb(107, 0, 0);
   }
 
   .tile--team1 {
@@ -127,3 +127,44 @@
     width: 100%;
   }
   
+  .popup {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    background-color: rgba(0,0,0,.4);
+    color:black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .popup-inner {
+    position:relative;
+    padding:32px;
+    width:100%;
+    max-width: 75%;
+    background-color: white;
+
+  }
+
+  .popup-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: top;
+    padding:0px;
+    width:100%
+  }
+  .popup-inner .close-btn {
+    position: absolute;
+    top: 16px;
+    right:16px;
+  }
+  
+  img.tutorial{
+    width:400px;
+    height:300px;
+  }

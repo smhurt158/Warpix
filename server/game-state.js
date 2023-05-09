@@ -90,6 +90,10 @@ var Board = /** @class */ (function () {
         }
         if (destination.team != team) {
             var trail = new Trail(team, source, destination);
+            if (source.team == team) {
+                source.sourcesTrail = true;
+                source.trailSourced = trail;
+            }
             destination.hasTrail = true;
             destination.trail = trail;
             this.tileStates.forEach(function (tile) {
@@ -102,19 +106,15 @@ var Board = /** @class */ (function () {
             var currTile = source;
             while (currTile.hasTrail) {
                 //console.log(currTile)
-                currTile.team = team;
                 if (currTile.sourcesTrail && currTile.team != team) {
-                    console.log(currTile);
                     this.destroyTrail(currTile.trailSourced, null);
                 }
+                currTile.team = team;
                 this.completeTrail(currTile);
                 currTile = currTile.trail.getPreviousTile(this.tileStates);
             }
-            currTile = source;
-            while (currTile.hasTrail) {
-                var a = currTile;
-                currTile = currTile.trail.getPreviousTile(this.tileStates);
-                a.trail.destroy(this.tileStates);
+            if (source.hasTrail) {
+                this.destroyTrail(source.trail, null);
             }
         }
         this.handleChange(this.tileStates);
@@ -125,13 +125,17 @@ var Board = /** @class */ (function () {
     Board.prototype.destroyTrail = function (trail, source) {
         var containsSource = false;
         var btile = trail.getPreviousTile(this.tileStates);
-        while (btile.hasTrail) {
+        while (btile.hasTrail && btile.trail.team == trail.team) {
             if (btile == source) {
                 containsSource = true;
             }
             var a = btile;
             btile = btile.trail.getPreviousTile(this.tileStates);
             a.trail.destroy(this.tileStates);
+        }
+        if (btile.sourcesTrail) {
+            btile.sourcesTrail = false;
+            btile.trailSourced = null;
         }
         var ftrail = trail.next;
         while (ftrail != undefined) {

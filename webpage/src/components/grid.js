@@ -79,7 +79,9 @@ const Grid = ({
   return (
     <main>
       <div id="grid">
-      <TransformWrapper>
+      <TransformWrapper doubleClick={
+        {disabled:true}
+      }>
         <TransformComponent>
           <div id="inner-grid">
             {tileStates.map((row) => (
