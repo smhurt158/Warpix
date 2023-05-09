@@ -10,7 +10,7 @@ const Grid = ({
   const [selectedTile, setSelectedTile] = useState(null)
   const [tileStates, setTileStates] = useState([])
   const [lastMoveTime, setLastMoveTime] = useState(Date.now())
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("Error: No errors")
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(window.location.origin.replace(/^http/, 'ws'),{
   //const {sendMessage, lastMessage, readyState} = useWebSocket("ws://localhost:3001",{
@@ -40,12 +40,12 @@ const Grid = ({
 
     }
     if(info.type === "error"){
-      setErrorMessage(info.message)
+      setErrorMessage("Error: " + info.message)
     }
   }, [lastMessage]);
 
   const OnSelected = (tile) => {
-    setErrorMessage("");
+    setErrorMessage("Error: No errors");
     if(selectedTile == null){
       tile.selected = true;
       setSelectedTile(tile);
