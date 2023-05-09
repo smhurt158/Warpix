@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.Trail = exports.Tile = exports.Board = void 0;
 var Board = /** @class */ (function () {
     function Board(width, height, handleChange) {
