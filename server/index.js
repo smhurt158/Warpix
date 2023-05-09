@@ -168,4 +168,4 @@ wss.on('connection', function (ws) {
 server.listen(PORT, function () { return console.log('Server running on ', PORT); });
 setInterval(function () {
     broadcast("refresh-connection", "");
-}, 30000);
+}, 31000);

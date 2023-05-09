@@ -6,7 +6,7 @@ var game_state_1 = require("./game-state");
 var Controller = /** @class */ (function () {
     function Controller(updateClients) {
         this.updateClients = updateClients;
-        this.gameBoard = new game_state_1.Board(50, 25, updateClients);
+        this.gameBoard = new game_state_1.Board(20, 10, updateClients);
         this.accountManager = new accounts_manager_1.AccountManager();
     }
     Controller.prototype.makeGameMove = function (username, row, column, srow, scolumn) {
@@ -14,7 +14,7 @@ var Controller = /** @class */ (function () {
         if (!user || !user.team) {
             return [false, "User not found"];
         }
-        if (user.lastMove + 1000 * 3 > Date.now()) {
+        if (user.lastMove + 1000 * 30 > Date.now()) {
             console.log(user.lastMove);
             return [false, "Still on Cooldown"];
         }
