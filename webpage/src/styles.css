@@ -7,11 +7,11 @@
     font-family: sans-serif;
     text-align: center;
     background-color: rgba(69,68,67,255);
-    height: 100vh;
+    height: 150vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: top;
     align-items: center;
     line-height: 1;
     color: white;
