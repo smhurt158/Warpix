@@ -83,29 +83,37 @@ export default function App() {
 
   return (
     <div className="app">
-      <div>
-        <button onClick={()=> setPopup(true)}>How To Play</button>
+      <div className="header">
         {!loginData ? (
-          <div id="login">
+          <div className="login-header">
             <h1> Welcome To Warpix</h1>
-            <img className="art"></img>
-            <h2> Google Signin: </h2>
-            <img className="google-signin" src={googleImage} onClick={handleLogin}/>
           </div>
         ):(
-          <div>
-            <h3>
-              User: {loginData.email}
+          <div className="loggedin-header">
+            <h3 className="user">
+              {loginData.email}
             </h3>
-            
-            <button onClick={handleLogout}>Logout </button>
-            <h3>
+            <button className="logout-button" onClick={handleLogout}>Logout </button>
+            <h3 className="team-header">
               Team: <span className={"team-text team-text--" + team}>{team}</span>
-            </h3>
-            <Grid username={loginData.email}/>
+            </h3> 
+          </div>
+        )}
+        <button className="popup-button" onClick={()=> setPopup(true)}>How To Play</button>
+      </div>
+      <div className="content">
+        {loginData ? (
+          <Grid username={loginData.email}/>
+        ):(
+          <div>
+            <img className="art"></img>
+            <br></br>
+            <img className="google-signin" src={googleImage} onClick={handleLogin}/>
           </div>
         )}
       </div>
+      
+
       <Popup trigger={popup} onClose={() => setPopup(false)}>
         <ul className="popup-list">
           <li>
